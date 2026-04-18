@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart - Human Body Lab</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+button {
+  background: #7c6aff;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #a855f7;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>❤️ Human Heart</h1>
+
+<div class="card">
+  <h3>What is Heart?</h3>
+  <p>The heart is a muscular organ that pumps blood throughout the body.</p>
+</div>
+
+<div class="card">
+  <h3>Functions of Heart</h3>
+  <ul>
+    <li>Pumps oxygen-rich blood</li>
+    <li>Supplies nutrients</li>
+    <li>Removes waste</li>
+  </ul>
+</div>
+
+<!-- QUIZ -->
+<div class="card">
+  <h3>Quiz</h3>
+  <p>What does the heart do?</p>
+
+  <button onclick="checkAnswer('wrong')">Stores oxygen</button><br>
+  <button onclick="checkAnswer('correct')">Pumps blood</button><br>
+  <button onclick="checkAnswer('wrong')">Controls brain</button>
+
+  <p id="result"></p>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(answer) {
+  const result = document.getElementById("result");
+
+  if (answer === "correct") {
+    result.innerText = "✅ Correct!";
+    result.style.color = "lightgreen";
+  } else {
+    result.innerText = "❌ Try again!";
+    result.style.color = "red";
+  }
+}
+</script>
+
+</body>
+</html>
