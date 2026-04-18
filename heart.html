@@ -703,6 +703,14 @@
       });
 
     })();
-  </script>
+  </function showPart(part){
+  let data = {
+    lv: "Left ventricle pumps oxygenated blood to the body.",
+    rv: "Right ventricle sends blood to lungs.",
+    la: "Left atrium receives oxygenated blood."
+  };
+
+  document.getElementById("partInfo").innerText = data[part];
+}>
 </body>
 </html>
