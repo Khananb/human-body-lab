@@ -3,122 +3,779 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Human Body Lab</title>
-
+<title>Human Body Lab - Interactive Learning</title>
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #0a0a0f;
-  color: #fff;
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+  color: #e0e0e0;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 header {
   padding: 20px;
   text-align: center;
-  font-size: 28px;
-  font-weight: bold;
-  background: linear-gradient(135deg, #7c6aff, #a855f7);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  animation: slideDown 0.6s ease-out;
+}
+
+header h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.header-subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .container {
-  padding: 30px 20px;
-  max-width: 1100px;
-  margin: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(102, 126, 234, 0.5);
+  transform: translateY(-2px);
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 h2 {
   text-align: center;
   margin-bottom: 30px;
-  color: #ccc;
+  font-size: 24px;
+  color: #fff;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 50px;
 }
 
 .card {
-  background: #151520;
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 25px;
+  background: rgba(30, 30, 50, 0.8);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  padding: 24px;
   border-radius: 16px;
-  text-align: center;
-  transition: 0.3s;
   cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.320, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.card:hover::before {
+  left: 100%;
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  background: #1e1e2e;
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(102, 126, 234, 0.5);
+  background: rgba(30, 30, 50, 0.95);
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+}
+
+.card-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: inline-block;
+  animation: bounce 2s infinite;
+}
+
+.card:nth-child(2) .card-icon { animation-delay: 0.2s; }
+.card:nth-child(3) .card-icon { animation-delay: 0.4s; }
+.card:nth-child(4) .card-icon { animation-delay: 0.6s; }
+.card:nth-child(5) .card-icon { animation-delay: 0.8s; }
+.card:nth-child(6) .card-icon { animation-delay: 1s; }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .card h3 {
-  margin: 10px 0;
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #fff;
+  position: relative;
+  z-index: 2;
 }
 
 .card p {
+  font-size: 13px;
+  color: #bbb;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 16px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.3s ease;
+}
+
+.difficulty {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(102, 126, 234, 0.2);
+  border-radius: 20px;
+  font-size: 11px;
+  color: #667eea;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeInModal 0.3s ease-out;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+  padding-bottom: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.modal-header h2::after {
+  display: none;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.close-btn:hover {
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  margin-bottom: 24px;
+}
+
+.modal-body p {
+  margin-bottom: 12px;
+  line-height: 1.7;
+  color: #ddd;
+}
+
+.quiz-question {
+  margin-bottom: 20px;
+}
+
+.quiz-question h4 {
+  color: #667eea;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.quiz-option {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   font-size: 14px;
-  color: #aaa;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+.quiz-option:hover {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.5);
+  transform: translateX(4px);
 }
 
-.score-box {
+.quiz-option.selected {
+  background: rgba(102, 126, 234, 0.3);
+  border-color: #667eea;
+}
+
+.quiz-option.correct {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.quiz-option.incorrect {
+  background: rgba(244, 67, 54, 0.3);
+  border-color: #f44336;
+  color: #f44336;
+}
+
+.btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.quiz-result {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
   text-align: center;
-  margin-top: 30px;
-  font-size: 18px;
-  color: #7c6aff;
+}
+
+.quiz-result.failed {
+  background: rgba(244, 67, 54, 0.1);
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+.footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: #888;
+  font-size: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 50px;
+}
+
+.achievement {
+  display: inline-block;
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.5);
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: #ffc107;
+  font-size: 12px;
+  margin: 4px;
+  animation: popIn 0.5s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.level-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  header h1 { font-size: 24px; }
+  .container { padding: 20px 16px; }
+  .modal-content { padding: 24px; width: 95%; }
+  .stats-bar { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-
 <body>
 
-<header>🧠 Human Body Lab</header>
+<header>
+  <h1>🧬 Human Body Lab</h1>
+  <div class="header-subtitle">Interactive Learning & Discovery</div>
+</header>
 
 <div class="container">
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-value" id="score">0</div>
+      <div class="stat-label">Total Points</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="level">1</div>
+      <div class="stat-label">Level</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="lessons-completed">0</div>
+      <div class="stat-label">Lessons Completed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="accuracy">--</div>
+      <div class="stat-label">Quiz Accuracy</div>
+    </div>
+  </div>
 
-<h2>Explore Human Body Systems</h2>
+  <h2>Explore Human Body Systems</h2>
+  
+  <div class="grid" id="systems-grid"></div>
 
-<div class="grid">
-
-<a href="heart.html">
-<div class="card">
-  <h3>❤️ Heart</h3>
-  <p>Learn how blood flows and keeps you alive</p>
-</div>
-</a>
-
-<a href="brain.html">
-<div class="card">
-  <h3>🧠 Brain</h3>
-  <p>Understand thinking, memory & control</p>
-</div>
-</a>
-
-<a href="lungs.html">
-<div class="card">
-  <h3>🫁 Lungs</h3>
-  <p>Discover breathing & oxygen system</p>
-</div>
-</a>
-
-</div>
-
-<div class="score-box">
-🏆 Your Score: <span id="score">0</span>
+  <div class="footer">
+    <p>💡 Click any system card to learn and take a quiz • Knowledge is power!</p>
+  </div>
 </div>
 
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title"></h2>
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      <button class="btn" id="start-quiz-btn" onclick="startQuiz()">Take Quiz</button>
+    </div>
+  </div>
 </div>
 
 <script>
-let score = localStorage.getItem("score") || 0;
-document.getElementById("score").innerText = score;
+const bodySystems = [
+  {
+    id: 'heart',
+    icon: '❤️',
+    name: 'Heart',
+    description: 'Learn how your heart pumps blood throughout your body',
+    content: '<p><strong>The heart</strong> is a muscular organ about the size of your fist that beats around 100,000 times per day.</p><p><strong>Key functions:</strong></p><ul style="margin: 12px 0; padding-left: 20px;"><li>Pumps oxygen-rich blood to all body cells</li><li>Collects oxygen-poor blood and sends it to lungs</li><li>Maintains blood pressure</li></ul><p>The heart has four chambers: right atrium, right ventricle, left atrium, and left ventricle. A healthy heart is crucial for life!</p>',
+    difficulty: 'Beginner',
+    progress: 0
+  },
+  {
+    id: 'brain',
+    icon: '🧠',
+    name: 'Brain',
+    description: 'Understand thinking, memory, and nervous control',
+    content: '<p><strong>Your brain</strong> is the command center containing 86 billion neurons that control everything you do.</p><p><strong>Main regions:</strong></p><ul style="margin: 12px 0; padding-left: 20px;"><li>Cerebrum: Thinking and consciousness</li><li>Cerebellum: Balance and coordination</li><li>Brainstem: Breathing and heart rate</li></ul><p>The brain uses about 20% of your body\'s energy despite being only 2% of body weight. It\'s constantly learning and adapting!</p>',
+    difficulty: 'Intermediate',
+    progress: 0
+  },
+  {
+    id: 'lungs',
+    icon: '🫁',
+    name: 'Lungs',
+    description: 'Discover breathing and oxygen exchange system',
+    content: '<p><strong>Your lungs</strong> are two spongy organs that extract oxygen from air and remove carbon dioxide waste.</p><p><strong>The breathing process:</strong></p><ul style="margin: 12px 0; padding-left: 20px;"><li>Air enters through nose/mouth</li><li>Travels down trachea to bronchi</li><li>Oxygen crosses into bloodstream</li><li>CO₂ waste is exhaled</li></ul><p>An average person takes 20,000 breaths per day. Healthy lungs are vital for oxygen delivery to all cells!</p>',
+    difficulty: 'Beginner',
+    progress: 0
+  },
+  {
+    id: 'skeleton',
+    icon: '💀',
+    name: 'Skeleton',
+    description: 'Explore bones, joints, and structural support',
+    content: '<p><strong>Your skeleton</strong> consists of 206 bones in adults that provide structure, protection, and enable movement.</p><p><strong>Key responsibilities:</strong></p><ul style="margin: 12px 0; padding-left: 20px;"><li>Provides structural framework</li><li>Protects vital organs (brain, heart, lungs)</li><li>Produces blood cells in bone marrow</li><li>Stores minerals like calcium</li></ul><p>Bones are living tissue that constantly renew themselves. Exercise and calcium help keep bones strong!</p>',
+    difficulty: 'Beginner',
+    progress: 0
+  },
+  {
+    id: 'digestive',
+    icon: '🔗',
+    name: 'Digestive System',
+    description: 'Learn how your body breaks down and absorbs food',
+    content: '<p><strong>The digestive system</strong> converts food into nutrients your body can use for energy and growth.</p><p><strong>The journey of food:</strong></p><ul style="margin: 12px 0; padding-left: 20px;"><li>Mouth: Chewing and saliva breakdown</li><li>Stomach: Churning and acid breakdown</li><li>Small intestine: Nutrient absorption</li><li>Large intestine: Water absorption and waste</li></ul><p>The entire digestive process takes about 24-72 hours. Good digestion is essential for overall health!</p>',
+    difficulty: 'Intermediate',
+    progress: 0
+  },
+  {
+    id: 'nervous',
+    icon: '⚡',
+    name: 'Nervous System',
+    description: 'Understand communication and reflex systems',
+    content: '<p><strong>The nervous system</strong> is your body\'s communication network that transmits signals between brain and body.</p><p><strong>Two main parts:</strong></p><ul style="margin: 12px 0; padding-left: 20px;"><li>Central Nervous System: Brain and spinal cord</li><li>Peripheral Nervous System: Nerves throughout body</li></ul><p>Information travels at speeds up to 120 meters per second! Your nervous system allows you to react to your environment instantly.</p>',
+    difficulty: 'Advanced',
+    progress: 0
+  }
+];
+
+const quizzes = {
+  heart: [
+    { q: 'How many chambers does the human heart have?', a: ['2', '3', '4', '5'], correct: 2 },
+    { q: 'Approximately how many times does your heart beat per day?', a: ['50,000', '100,000', '150,000', '200,000'], correct: 1 },
+    { q: 'Which side of the heart pumps oxygen-rich blood?', a: ['Right side', 'Left side', 'Both equally', 'Neither'], correct: 1 }
+  ],
+  brain: [
+    { q: 'Approximately how many neurons does the human brain contain?', a: ['6 million', '60 million', '860 million', '86 billion'], correct: 3 },
+    { q: 'What percentage of body energy does the brain use?', a: ['5%', '10%', '20%', '40%'], correct: 2 },
+    { q: 'Which part of the brain controls balance and coordination?', a: ['Cerebrum', 'Cerebellum', 'Brainstem', 'Hippocampus'], correct: 1 }
+  ],
+  lungs: [
+    { q: 'How many lungs does a healthy human have?', a: ['1', '2', '3', '4'], correct: 1 },
+    { q: 'What gas do lungs remove from the blood?', a: ['Nitrogen', 'Oxygen', 'Carbon dioxide', 'Argon'], correct: 2 },
+    { q: 'How many breaths does an average person take per day?', a: ['5,000', '10,000', '20,000', '50,000'], correct: 2 }
+  ],
+  skeleton: [
+    { q: 'How many bones are in an adult human skeleton?', a: ['150', '186', '206', '250'], correct: 2 },
+    { q: 'Which is the largest bone in the human body?', a: ['Humerus', 'Femur', 'Tibia', 'Fibula'], correct: 1 },
+    { q: 'What do bone marrow cells produce?', a: ['Calcium', 'Blood cells', 'Cartilage', 'Nerves'], correct: 1 }
+  ],
+  digestive: [
+    { q: 'How long does the digestive process typically take?', a: ['2-4 hours', '8-12 hours', '24-72 hours', '7-10 days'], correct: 2 },
+    { q: 'Where does most nutrient absorption occur?', a: ['Stomach', 'Small intestine', 'Large intestine', 'Esophagus'], correct: 1 },
+    { q: 'What enzyme in saliva begins breaking down food?', a: ['Pepsin', 'Lipase', 'Amylase', 'Trypsin'], correct: 2 }
+  ],
+  nervous: [
+    { q: 'What is the speed of nerve signal transmission?', a: ['10 meters/sec', '50 meters/sec', '120 meters/sec', '300 meters/sec'], correct: 2 },
+    { q: 'How many parts does the nervous system have?', a: ['1', '2', '3', '4'], correct: 1 },
+    { q: 'Which contains the spinal cord?', a: ['Peripheral Nervous System', 'Central Nervous System', 'Autonomic Nervous System', 'Somatic Nervous System'], correct: 1 }
+  ]
+};
+
+let stats = JSON.parse(localStorage.getItem('stats')) || {
+  score: 0,
+  level: 1,
+  lessonsCompleted: 0,
+  quizzesAttempted: 0,
+  correctAnswers: 0
+};
+
+let currentSystem = null;
+let currentQuizIndex = 0;
+let quizAnswers = [];
+
+function updateStats() {
+  document.getElementById('score').textContent = stats.score;
+  document.getElementById('level').textContent = Math.floor(stats.score / 250) + 1;
+  document.getElementById('lessons-completed').textContent = stats.lessonsCompleted;
+  const accuracy = stats.quizzesAttempted > 0 
+    ? Math.round((stats.correctAnswers / (stats.quizzesAttempted * 3)) * 100) 
+    : '--';
+  document.getElementById('accuracy').textContent = accuracy === '--' ? '--' : accuracy + '%';
+}
+
+function renderSystems() {
+  const grid = document.getElementById('systems-grid');
+  grid.innerHTML = bodySystems.map(system => `
+    <div class="card" onclick="openSystem('${system.id}')">
+      <div class="card-icon">${system.icon}</div>
+      <h3>${system.name}</h3>
+      <p>${system.description}</p>
+      <div class="card-footer">
+        <div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${system.progress}%"></div>
+          </div>
+          <span class="difficulty">${system.difficulty}</span>
+        </div>
+      </div>
+      <div class="level-badge">Learn More →</div>
+    </div>
+  `).join('');
+}
+
+function openSystem(systemId) {
+  currentSystem = bodySystems.find(s => s.id === systemId);
+  currentQuizIndex = 0;
+  quizAnswers = [];
+  
+  document.getElementById('modal-title').textContent = currentSystem.icon + ' ' + currentSystem.name;
+  document.getElementById('modal-body').innerHTML = currentSystem.content;
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+function startQuiz() {
+  if (!currentSystem) return;
+  
+  quizAnswers = [];
+  currentQuizIndex = 0;
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  const quiz = quizzes[currentSystem.id];
+  if (currentQuizIndex >= quiz.length) {
+    showQuizResults();
+    return;
+  }
+  
+  const question = quiz[currentQuizIndex];
+  const modalBody = document.getElementById('modal-body');
+  
+  modalBody.innerHTML = `
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 12px; color: #667eea; margin-bottom: 12px;">
+        Question ${currentQuizIndex + 1} of ${quiz.length}
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${((currentQuizIndex + 1) / quiz.length) * 100}%"></div>
+      </div>
+    </div>
+    <div class="quiz-question">
+      <h4>${question.q}</h4>
+      ${question.a.map((option, idx) => `
+        <div class="quiz-option" onclick="selectAnswer(${idx})">${option}</div>
+      `).join('')}
+    </div>
+  `;
+  
+  document.getElementById('start-quiz-btn').textContent = 'Next Question';
+  document.getElementById('start-quiz-btn').onclick = () => nextQuestion(question.correct);
+}
+
+function selectAnswer(index) {
+  document.querySelectorAll('.quiz-option').forEach((el, idx) => {
+    el.classList.remove('selected');
+    if (idx === index) {
+      el.classList.add('selected');
+    }
+  });
+  quizAnswers[currentQuizIndex] = index;
+}
+
+function nextQuestion(correct) {
+  if (quizAnswers[currentQuizIndex] === undefined) {
+    alert('Please select an answer');
+    return;
+  }
+  
+  currentQuizIndex++;
+  showQuizQuestion();
+}
+
+function showQuizResults() {
+  const quiz = quizzes[currentSystem.id];
+  let correct = 0;
+  
+  quizAnswers.forEach((answer, idx) => {
+    if (answer === quiz[idx].correct) correct++;
+  });
+  
+  const percentage = Math.round((correct / quiz.length) * 100);
+  const points = correct * 100;
+  
+  stats.score += points;
+  stats.lessonsCompleted++;
+  stats.quizzesAttempted++;
+  stats.correctAnswers += correct;
+  
+  currentSystem.progress = Math.min(100, currentSystem.progress + 20);
+  
+  localStorage.setItem('stats', JSON.stringify(stats));
+  updateStats();
+  renderSystems();
+  
+  const modalBody = document.getElementById('modal-body');
+  modalBody.innerHTML = `
+    <div class="quiz-result ${percentage >= 70 ? '' : 'failed'}">
+      <div style="font-size: 24px; margin-bottom: 12px;">
+        ${percentage >= 90 ? '🎉' : percentage >= 70 ? '✨' : '💪'}
+      </div>
+      <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">
+        Score: ${percentage}%
+      </div>
+      <div style="font-size: 13px; color: #aaa;">
+        You got ${correct} out of ${quiz.length} correct • Earned ${points} points
+      </div>
+    </div>
+    <div style="margin-top: 20px; padding: 16px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 3px solid #667eea;">
+      <strong style="color: #667eea; display: block; margin-bottom: 8px;">💡 Learning Tip</strong>
+      <p style="font-size: 13px; margin: 0;">Great work! ${percentage >= 70 ? 'You\'re mastering this system. Try another topic!' : 'Review the key facts and try again to improve your score.'}</p>
+    </div>
+  `;
+  
+  document.getElementById('start-quiz-btn').textContent = 'Try Another System';
+  document.getElementById('start-quiz-btn').onclick = closeModal;
+}
+
+window.addEventListener('load', () => {
+  updateStats();
+  renderSystems();
+});
+
+window.addEventListener('click', (e) => {
+  if (e.target.id === 'modal') closeModal();
+});
 </script>
 
 </body>
