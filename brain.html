@@ -1,87 +1,676 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brain - Human Body Lab</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Brain · Human Body Lab</title>
+  <!-- Premium Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
-  padding: 20px;
-}
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #05070a;
+      color: #eef2fb;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
 
-.container {
-  max-width: 800px;
-  margin: auto;
-}
+    /* —— animated neural background —— */
+    .neural-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: radial-gradient(circle at 30% 40%, #141e3a, #03050b 95%);
+    }
 
-.card {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 20px;
-}
+    canvas#particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.6;
+    }
 
-button {
-  background: #7c6aff;
-  border: none;
-  padding: 10px;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 8px;
-}
-</style>
+    /* —— glass components —— */
+    .glass-panel, .expert-card {
+      background: rgba(12, 20, 35, 0.45);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(100, 150, 255, 0.12);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(80, 160, 255, 0.1) inset;
+    }
+
+    /* —— header (brain theme) —— */
+    .expert-header {
+      padding: 1.2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(130, 180, 255, 0.25);
+      backdrop-filter: blur(10px);
+      background: rgba(5, 12, 25, 0.45);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .system-icon {
+      font-size: 2.4rem;
+      filter: drop-shadow(0 0 14px #7aaaff);
+      color: #b0ccff;
+    }
+
+    .logo-text h1 {
+      font-weight: 600;
+      font-size: 1.8rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #dbe5ff, #b0c8ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-text .badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #9eb9ff;
+    }
+
+    .stats-module {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      background: rgba(30, 50, 100, 0.3);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #8aaeff;
+      border: 1px solid rgba(90, 160, 255, 0.3);
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-info .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #b8ceff;
+      opacity: 0.9;
+    }
+
+    .stat-info .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(to right, #fff, #d0e0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* —— main container —— */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 3rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 1.8rem;
+    }
+
+    .section-title h2 {
+      font-weight: 500;
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+      color: #d6e2ff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title h2 i {
+      color: #7fa3ff;
+      font-size: 1.8rem;
+    }
+
+    /* —— cards —— */
+    .expert-card {
+      border-radius: 28px;
+      padding: 2rem 2rem 1.8rem;
+      margin-bottom: 28px;
+      transition: transform 0.2s ease, box-shadow 0.3s;
+      border: 1px solid rgba(100, 170, 255, 0.2);
+      background: rgba(10, 18, 35, 0.4);
+      backdrop-filter: blur(12px);
+    }
+
+    .expert-card:hover {
+      border-color: rgba(120, 190, 255, 0.4);
+      box-shadow: 0 20px 30px -8px #00000080, 0 0 0 1px rgba(70, 150, 255, 0.2) inset;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .card-header i {
+      font-size: 2rem;
+      color: #7fadff;
+    }
+
+    h3 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #e3ecff, #b6ceff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    p {
+      color: #d5deee;
+      font-size: 1.05rem;
+    }
+
+    ul {
+      padding-left: 1.5rem;
+      margin-top: 0.5rem;
+      color: #dfd9f0;
+    }
+
+    li {
+      margin: 8px 0;
+      font-size: 1rem;
+    }
+
+    /* —— quiz area —— */
+    .quiz-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 25px 0 15px;
+    }
+
+    .quiz-btn {
+      background: rgba(15, 25, 50, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(100, 170, 255, 0.25);
+      padding: 16px 20px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #d9e3ff;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .quiz-btn i {
+      font-size: 1.3rem;
+      width: 28px;
+      color: #8db5ff;
+    }
+
+    .quiz-btn:hover {
+      background: rgba(40, 65, 110, 0.7);
+      border-color: #7fb0ff;
+      transform: translateX(6px);
+      box-shadow: 0 8px 18px -4px #142544;
+      color: white;
+    }
+
+    .result-area {
+      margin-top: 24px;
+      padding: 18px 22px;
+      border-radius: 40px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+      border-left: 6px solid #7fa3ff;
+      font-weight: 500;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: 0.2s;
+    }
+
+    .score-badge {
+      background: #ffd96620;
+      padding: 4px 14px;
+      border-radius: 40px;
+      border: 1px solid #ffbf7e;
+      color: #ffe2a3;
+      margin-left: auto;
+    }
+
+    /* —— back control —— */
+    .back-control {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pill-link {
+      background: transparent;
+      border: 1px solid #6b8ec9;
+      padding: 12px 28px;
+      border-radius: 60px;
+      color: #cfdeff;
+      font-weight: 500;
+      transition: 0.2s;
+      text-decoration: none;
+      backdrop-filter: blur(6px);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.05rem;
+    }
+
+    .pill-link:hover {
+      background: #1e3466;
+      border-color: #8aaeff;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .score-preview {
+      background: rgba(30, 50, 90, 0.25);
+      padding: 8px 24px;
+      border-radius: 60px;
+      border: 1px solid #7fa3ff;
+      backdrop-filter: blur(8px);
+      font-weight: 500;
+    }
+
+    /* responsiveness */
+    @media (max-width: 680px) {
+      .expert-header {
+        flex-direction: column;
+        align-items: start;
+      }
+      .stats-module {
+        width: 100%;
+        justify-content: space-around;
+      }
+      .container {
+        padding: 1.5rem 1rem;
+      }
+    }
+
+    .fa-arrow-left {
+      transition: transform 0.2s;
+    }
+    .pill-link:hover .fa-arrow-left {
+      transform: translateX(-4px);
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
+  <!-- neural particle canvas -->
+  <canvas id="particles"></canvas>
+  <div class="neural-bg"></div>
 
-<h1>🧠 Human Brain</h1>
+  <!-- header (brain theme) -->
+  <header class="expert-header">
+    <div class="logo-area">
+      <div class="system-icon">
+        <i class="fas fa-brain"></i>
+      </div>
+      <div class="logo-text">
+        <h1>NEURAL ATLAS</h1>
+        <div class="badge">BRAIN · COGNITION LAB</div>
+      </div>
+    </div>
+    <div class="stats-module">
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-wave-square"></i></div>
+        <div class="stat-info">
+          <div class="label">SYNAPSES</div>
+          <div class="value">86B</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-flask"></i></div>
+        <div class="stat-info">
+          <div class="label">MASTERY</div>
+          <div class="value" id="masteryLevelDisplay">II</div>
+        </div>
+      </div>
+    </div>
+  </header>
 
-<div class="card">
-  <p>The brain controls all activities of the body including thinking, memory and movement.</p>
-</div>
+  <main class="container">
+    <!-- overview -->
+    <div class="expert-card">
+      <div class="card-header">
+        <i class="fas fa-brain"></i>
+        <h3>Overview</h3>
+      </div>
+      <p>The brain is the command center of the nervous system. It controls all activities of the body—conscious and unconscious—including thought, memory, emotion, touch, motor skills, vision, breathing, temperature, and every process that regulates our body.</p>
+    </div>
 
-<div class="card">
-  <h3>Functions</h3>
-  <ul>
-    <li>Controls body</li>
-    <li>Stores memory</li>
-    <li>Processes information</li>
-  </ul>
-</div>
+    <!-- key functions -->
+    <div class="expert-card">
+      <div class="card-header">
+        <i class="fas fa-list-check"></i>
+        <h3>Primary Functions</h3>
+      </div>
+      <ul>
+        <li><i class="fas fa-microchip" style="margin-right: 12px; color: #7fadff;"></i> Integrates sensory information</li>
+        <li><i class="fas fa-brain" style="margin-right: 12px; color: #7fadff;"></i> Controls voluntary & involuntary movement</li>
+        <li><i class="fas fa-database" style="margin-right: 12px; color: #7fadff;"></i> Stores and retrieves memory</li>
+        <li><i class="fas fa-comment-dots" style="margin-right: 12px; color: #7fadff;"></i> Processes cognition, language & emotion</li>
+      </ul>
+    </div>
 
-<div class="card">
-  <h3>Quiz</h3>
-  <p>What does the brain do?</p>
+    <!-- quiz section -->
+    <div class="expert-card" id="quizCard">
+      <div class="card-header">
+        <i class="fas fa-circle-question"></i>
+        <h3>Neural Quiz</h3>
+      </div>
+      <p style="margin-bottom: 6px;"><i class="fas fa-microscope"></i> What is the primary role of the brain?</p>
 
-  <button onclick="check('wrong')">Pumps blood</button><br>
-  <button onclick="check('correct')">Controls body</button><br>
-  <button onclick="check('wrong')">Digests food</button>
+      <div class="quiz-grid">
+        <button class="quiz-btn" data-answer="wrong" id="btnWrong1">
+          <i class="fas fa-heart"></i> Pumps blood
+        </button>
+        <button class="quiz-btn" data-answer="correct" id="btnCorrect">
+          <i class="fas fa-brain"></i> Controls body & processes information
+        </button>
+        <button class="quiz-btn" data-answer="wrong" id="btnWrong2">
+          <i class="fas fa-apple-alt"></i> Digests food
+        </button>
+      </div>
 
-  <p id="result"></p>
-</div>
+      <div id="resultPanel" class="result-area">
+        <i class="fas fa-circle-info" id="resultIcon"></i>
+        <span id="resultMessage">Select an answer to test your knowledge</span>
+        <span class="score-badge" id="liveScoreBadge">🏆 <span id="miniScore">0</span> XP</span>
+      </div>
+    </div>
 
-</div>
+    <!-- back + score -->
+    <div class="back-control">
+      <a href="index.html" class="pill-link">
+        <i class="fas fa-arrow-left"></i> Back to Human Body Lab
+      </a>
+      <div class="score-preview">
+        <i class="fas fa-trophy" style="margin-right: 8px;"></i> 
+        total XP: <span id="globalScoreDisplay">0</span>
+      </div>
+    </div>
+  </main>
 
-<script>
-function check(ans){
-  let r = document.getElementById("result");
-  if(ans=="correct"){
-    r.innerText="✅ Correct";
-    r.style.color="lightgreen";
-  } else {
-    r.innerText="❌ Wrong";
-    r.style.color="red";
-  }
-}
-</script>
+  <script>
+    (function() {
+      "use strict";
 
+      // ---------- PARTICLE SYSTEM (neural) ----------
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+      const PARTICLE_COUNT = 90;
+      
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push({
+            x: Math.random(),
+            y: Math.random(),
+            vx: (Math.random() - 0.5) * 0.0015,
+            vy: (Math.random() - 0.5) * 0.0015,
+            size: Math.random() * 2.0 + 0.8,
+            baseSize: Math.random() * 2.0 + 0.8,
+            pulse: Math.random() * 6.28
+          });
+        }
+      }
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      function drawParticles() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, width, height);
+        
+        // bluish connections
+        ctx.strokeStyle = 'rgba(100, 170, 255, 0.12)';
+        ctx.lineWidth = 0.7;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i+1; j < particles.length; j++) {
+            const dx = (particles[i].x - particles[j].x) * width;
+            const dy = (particles[i].y - particles[j].y) * height;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 120) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x * width, particles[i].y * height);
+              ctx.lineTo(particles[j].x * width, particles[j].y * height);
+              ctx.strokeStyle = `rgba(120, 180, 255, ${0.15 * (1 - dist/140)})`;
+              ctx.stroke();
+            }
+          }
+        }
+        
+        particles.forEach(p => {
+          const pulseFactor = Math.sin(Date.now() * 0.002 + p.pulse) * 0.15 + 0.9;
+          const size = p.baseSize * pulseFactor;
+          
+          const gradient = ctx.createRadialGradient(
+            p.x * width, p.y * height, 0,
+            p.x * width, p.y * height, size * 3
+          );
+          gradient.addColorStop(0, '#b0d0ff');
+          gradient.addColorStop(0.6, '#3f70b0');
+          gradient.addColorStop(1, 'transparent');
+          
+          ctx.beginPath();
+          ctx.arc(p.x * width, p.y * height, size, 0, 2 * Math.PI);
+          ctx.fillStyle = gradient;
+          ctx.shadowColor = '#5f9eff';
+          ctx.shadowBlur = 10;
+          ctx.fill();
+          
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = 1;
+          if (p.x > 1) p.x = 0;
+          if (p.y < 0) p.y = 1;
+          if (p.y > 1) p.y = 0;
+        });
+        ctx.shadowBlur = 0;
+        
+        requestAnimationFrame(drawParticles);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      initParticles();
+      resizeCanvas();
+      drawParticles();
+
+      // ---------- SCORE MANAGEMENT (labScore) ----------
+      let currentScore = parseInt(localStorage.getItem("labScore")) || 0;
+      const oldScore = localStorage.getItem("score");
+      if (oldScore !== null) {
+        localStorage.setItem("labScore", oldScore);
+        localStorage.removeItem("score");
+        currentScore = parseInt(oldScore) || 0;
+      }
+      
+      const globalScoreSpan = document.getElementById('globalScoreDisplay');
+      const miniScoreSpan = document.getElementById('miniScore');
+      const masterySpan = document.getElementById('masteryLevelDisplay');
+      
+      function updateAllScoreUI() {
+        if (globalScoreSpan) globalScoreSpan.innerText = currentScore;
+        if (miniScoreSpan) miniScoreSpan.innerText = currentScore;
+        if (masterySpan) {
+          if (currentScore >= 80) masterySpan.innerText = "IV";
+          else if (currentScore >= 50) masterySpan.innerText = "III";
+          else if (currentScore >= 20) masterySpan.innerText = "II";
+          else masterySpan.innerText = "I";
+        }
+      }
+      
+      updateAllScoreUI();
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'labScore') {
+          currentScore = parseInt(e.newValue) || 0;
+          updateAllScoreUI();
+        }
+      });
+
+      // ---------- QUIZ LOGIC ----------
+      const resultMessage = document.getElementById('resultMessage');
+      const resultIcon = document.getElementById('resultIcon');
+      const resultPanel = document.getElementById('resultPanel');
+      const quizButtons = document.querySelectorAll('.quiz-btn');
+      
+      let quizAnswered = false;
+
+      function resetButtonStyles() {
+        quizButtons.forEach(btn => {
+          btn.style.background = '';
+          btn.style.borderColor = '';
+        });
+      }
+
+      function handleAnswer(answerValue) {
+        if (quizAnswered) return;
+        
+        const isCorrect = (answerValue === 'correct');
+        let feedbackMessage = '';
+        let iconType = '';
+        
+        resetButtonStyles();
+        
+        if (isCorrect) {
+          currentScore += 1;
+          localStorage.setItem('labScore', currentScore);
+          updateAllScoreUI();
+          
+          feedbackMessage = '✅ Correct! The brain controls the body and processes information. +1 XP';
+          iconType = 'fa-circle-check';
+          resultPanel.style.borderLeftColor = '#7fcf7f';
+          
+          const correctBtn = document.getElementById('btnCorrect');
+          if (correctBtn) {
+            correctBtn.style.background = 'rgba(30, 70, 60, 0.7)';
+            correctBtn.style.borderColor = '#7fcf7f';
+          }
+        } else {
+          feedbackMessage = '❌ Not quite. The brain does not pump blood or digest food. It controls the body.';
+          iconType = 'fa-circle-exclamation';
+          resultPanel.style.borderLeftColor = '#7f9fff';
+          
+          const correctBtn = document.getElementById('btnCorrect');
+          if (correctBtn) {
+            correctBtn.style.background = 'rgba(70, 70, 30, 0.3)';
+            correctBtn.style.borderColor = '#e6b800';
+          }
+        }
+        
+        resultMessage.innerText = feedbackMessage;
+        resultIcon.className = `fas ${iconType}`;
+        quizAnswered = true;
+        
+        resultPanel.style.transition = '0.3s';
+        resultPanel.style.transform = 'scale(1.01)';
+        setTimeout(() => resultPanel.style.transform = 'scale(1)', 120);
+      }
+
+      quizButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const answer = btn.getAttribute('data-answer');
+          handleAnswer(answer);
+        });
+      });
+
+      // Easter egg: double-click score to +1 XP
+      const scorePreviewDiv = document.querySelector('.score-preview');
+      if (scorePreviewDiv) {
+        scorePreviewDiv.addEventListener('dblclick', () => {
+          currentScore += 1;
+          localStorage.setItem('labScore', currentScore);
+          updateAllScoreUI();
+          globalScoreSpan.style.transform = 'scale(1.2)';
+          setTimeout(() => globalScoreSpan.style.transform = 'scale(1)', 120);
+        });
+      }
+
+      // Hover effect for cards
+      const cards = document.querySelectorAll('.expert-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const percentX = (x / rect.width) * 100;
+          const percentY = (y / rect.height) * 100;
+          this.style.setProperty('--mouse-x', `${percentX}%`);
+          this.style.setProperty('--mouse-y', `${percentY}%`);
+        });
+      });
+
+    })();
+  </script>
 </body>
 </html>
