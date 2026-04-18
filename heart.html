@@ -86,7 +86,10 @@ function checkAnswer(answer) {
   const result = document.getElementById("result");
 
   if (answer === "correct") {
-    result.innerText = "✅ Correct!";
+    let score = localStorage.getItem("score") || 0;
+score++;
+localStorage.setItem("score", score);
+result.innerText = "✅ Correct!";
     result.style.color = "lightgreen";
   } else {
     result.innerText = "❌ Try again!";
