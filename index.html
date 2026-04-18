@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Body Lab</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+  text-align: center;
+}
+
+header {
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.container {
+  padding: 20px;
+}
+
+.body-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card:hover {
+  background: #334155;
+  transform: translateY(-5px);
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🧠 Human Body Lab</header>
+
+<div class="container">
+  <h2>Select a Body Part</h2>
+
+  <div class="body-grid">
+
+    <a href="heart.html">
+      <div class="card">
+        ❤️ Heart
+      </div>
+    </a>
+
+    <a href="brain.html">
+      <div class="card">
+        🧠 Brain
+      </div>
+    </a>
+
+    <a href="lungs.html">
+      <div class="card">
+        🫁 Lungs
+      </div>
+    </a>
+
+  </div>
+</div>
+
+</body>
+</html>
