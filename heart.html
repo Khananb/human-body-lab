@@ -452,6 +452,103 @@
 
     <!-- back + score info -->
     <div class="back-control">
+      <!-- ========== PREMIUM 3D ATLAS SECTION (expert style) ========== -->
+<div class="expert-card" style="margin-top: 20px;">
+  <div class="card-header">
+    <i class="fas fa-cube" style="color: #7aaaff;"></i>
+    <h3>🧬 3D Interactive Model</h3>
+  </div>
+  <p style="margin-bottom: 18px;">Explore the anatomical structure in real-time 3D. Rotate, zoom, and dissect layers.</p>
+  
+  <!-- 3D Embed Container -->
+  <div style="position: relative; width: 100%; border-radius: 20px; overflow: hidden; border: 1px solid rgba(100, 170, 255, 0.25); box-shadow: 0 10px 30px -5px #00000060;">
+    <iframe 
+      width="100%" 
+      height="340" 
+      src="https://sketchfab.com/models/xxxx/embed?autostart=1&preload=1&ui_infos=0&ui_watermark=0" 
+      title="3D Heart Model" 
+      frameborder="0" 
+      allow="autoplay; fullscreen; xr-spatial-tracking" 
+      style="display: block;"
+    ></iframe>
+    <!-- Overlay gradient for locked effect -->
+    <div id="premiumOverlay" style="position: absolute; inset: 0; background: linear-gradient(145deg, rgba(5,10,20,0.7) 0%, rgba(10,20,40,0.85) 100%); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; pointer-events: none;">
+      <div style="text-align: center; padding: 30px;">
+        <i class="fas fa-lock" style="font-size: 3.5rem; color: #a0b5ff; opacity: 0.9; margin-bottom: 15px; filter: drop-shadow(0 0 20px #3f6eff);"></i>
+        <h4 style="font-size: 1.8rem; font-weight: 600; letter-spacing: -0.02em; background: linear-gradient(135deg, #e0e8ff, #b0c8ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px;">FULL ANATOMY</h4>
+        <p style="color: #b8ceff; max-width: 280px; margin: 0 auto 10px;">Complete layer‑by‑layer explanation, blood flow dynamics, and clinical notes.</p>
+        <span style="background: #1f3560; padding: 4px 16px; border-radius: 30px; font-size: 0.9rem; border: 1px solid #5f8ad0; color: #d0e0ff;">🔒 locked · premium</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Unlock Button & Pricing -->
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 24px; flex-wrap: wrap; gap: 15px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <i class="fas fa-tag" style="color: #7faaff;"></i>
+      <span style="font-size: 1.5rem; font-weight: 700; background: linear-gradient(145deg, #ffe7a0, #ffd966); -webkit-background-clip: text; background-clip: text; color: transparent;">₹49</span>
+      <span style="color: #a0b8e0;">one‑time · lifetime access</span>
+    </div>
+    <button id="unlockPremiumBtn" class="pill-link" style="background: linear-gradient(135deg, #2a4a8a, #1e3a6e); border: 1px solid #7faaff; padding: 14px 34px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 6px 14px #0f1e3a;">
+      <i class="fas fa-crown" style="margin-right: 10px;"></i> Unlock Full Access
+    </button>
+  </div>
+  
+  <!-- hidden message after unlock (demo) -->
+  <div id="unlockMessage" style="margin-top: 20px; padding: 16px 22px; border-radius: 40px; background: rgba(30,70,40,0.25); border-left: 6px solid #6fcf97; display: none; align-items: center; gap: 14px; backdrop-filter: blur(8px);">
+    <i class="fas fa-check-circle" style="font-size: 1.8rem; color: #7fdf9f;"></i>
+    <span style="font-size: 1.1rem;">✨ Full anatomy unlocked! 3D layers & clinical notes are now available.</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Unlock simulation (connects with your existing score system)
+    const unlockBtn = document.getElementById('unlockPremiumBtn');
+    const overlay = document.getElementById('premiumOverlay');
+    const msgDiv = document.getElementById('unlockMessage');
+    
+    // Check if already unlocked (using localStorage key)
+    const isUnlocked = localStorage.getItem('premiumHeartUnlocked') === 'true';
+    if (isUnlocked) {
+      if (overlay) overlay.style.display = 'none';
+      if (msgDiv) msgDiv.style.display = 'flex';
+      if (unlockBtn) {
+        unlockBtn.innerHTML = '<i class="fas fa-check"></i> Unlocked';
+        unlockBtn.disabled = true;
+        unlockBtn.style.opacity = '0.7';
+      }
+    }
+    
+    if (unlockBtn) {
+      unlockBtn.addEventListener('click', function() {
+        // In a real app you'd integrate payment. Here we simulate unlock.
+        localStorage.setItem('premiumHeartUnlocked', 'true');
+        if (overlay) overlay.style.display = 'none';
+        if (msgDiv) msgDiv.style.display = 'flex';
+        unlockBtn.innerHTML = '<i class="fas fa-check"></i> Unlocked';
+        unlockBtn.disabled = true;
+        unlockBtn.style.opacity = '0.7';
+        
+        // Optional: give bonus XP for unlocking (expert touch)
+        let currentScore = parseInt(localStorage.getItem('labScore')) || 0;
+        currentScore += 5;
+        localStorage.setItem('labScore', currentScore);
+        // Update any score displays on page
+        const scoreSpans = document.querySelectorAll('#globalScoreDisplay, #miniScore');
+        scoreSpans.forEach(el => { if(el) el.innerText = currentScore; });
+        const masterySpan = document.getElementById('masteryLevelDisplay');
+        if(masterySpan) {
+          if (currentScore >= 80) masterySpan.innerText = "IV";
+          else if (currentScore >= 50) masterySpan.innerText = "III";
+          else if (currentScore >= 20) masterySpan.innerText = "II";
+          else masterySpan.innerText = "I";
+        }
+      });
+    }
+  })();
+</script>
+<!-- ========== END PREMIUM BLOCK ========== -->
       <a href="index.html" class="pill-link">
         <i class="fas fa-arrow-left"></i> Back to Human Body Lab
       </a>
