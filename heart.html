@@ -407,6 +407,37 @@
       <div class="card-header">
         <i class="fas fa-list-check"></i>
         <h3>Key Functions</h3>
+        <div class="expert-card">
+
+<h3>🧬 Interactive 3D Heart</h3>
+
+<div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+  <!-- LEFT: 3D MODEL -->
+  <div style="flex:1; min-width:300px;">
+    <iframe 
+      width="100%" 
+      height="350"
+      src="https://sketchfab.com/models/6d7f2d8d3e5b4d1e9c9b6b6c6a9c3b3e/embed"
+      frameborder="0"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- RIGHT: PARTS -->
+  <div style="flex:1; min-width:250px;">
+    <h4>Click Parts:</h4>
+
+    <button onclick="showPart('lv')" class="quiz-btn">Left Ventricle</button>
+    <button onclick="showPart('rv')" class="quiz-btn">Right Ventricle</button>
+    <button onclick="showPart('la')" class="quiz-btn">Left Atrium</button>
+
+    <p id="partInfo" style="margin-top:15px;"></p>
+  </div>
+
+</div>
+
+</div>
       </div>
       <ul>
         <li><i class="fas fa-droplet" style="margin-right: 12px; color: #ffa7b9;"></i> Pumps oxygen-rich blood to tissues</li>
