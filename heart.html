@@ -8,91 +8,119 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0a0a0f;
+  color: #fff;
+}
+
+header {
+  text-align: center;
   padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ff4d6d, #ff6b81);
 }
 
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
-}
-
-h1 {
-  text-align: center;
+  padding: 20px;
 }
 
 .card {
-  background: #1e293b;
+  background: #151520;
+  border: 1px solid rgba(255,255,255,0.05);
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   margin-top: 20px;
 }
 
-button {
-  background: #7c6aff;
-  border: none;
-  padding: 10px 20px;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
+h2 {
+  margin-bottom: 10px;
 }
 
-button:hover {
-  background: #a855f7;
+ul {
+  padding-left: 20px;
+}
+
+.quiz-btn {
+  display: block;
+  width: 100%;
+  background: #1e1e2e;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.quiz-btn:hover {
+  background: #7c6aff;
+}
+
+.result {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #7c6aff;
 }
 </style>
-
 </head>
 
 <body>
 
+<header>❤️ Human Heart</header>
+
 <div class="container">
 
-<h1>❤️ Human Heart</h1>
-
 <div class="card">
-  <h3>What is Heart?</h3>
-  <p>The heart is a muscular organ that pumps blood throughout the body.</p>
+  <h2>Overview</h2>
+  <p>The heart is a muscular organ responsible for pumping blood throughout the body, delivering oxygen and nutrients.</p>
 </div>
 
 <div class="card">
-  <h3>Functions of Heart</h3>
+  <h2>Key Functions</h2>
   <ul>
     <li>Pumps oxygen-rich blood</li>
-    <li>Supplies nutrients</li>
-    <li>Removes waste</li>
+    <li>Maintains blood pressure</li>
+    <li>Removes waste products</li>
   </ul>
 </div>
 
-<!-- QUIZ -->
 <div class="card">
-  <h3>Quiz</h3>
-  <p>What does the heart do?</p>
+  <h2>Quick Quiz</h2>
+  <p>What is the main function of the heart?</p>
 
-  <button onclick="checkAnswer('wrong')">Stores oxygen</button><br>
-  <button onclick="checkAnswer('correct')">Pumps blood</button><br>
-  <button onclick="checkAnswer('wrong')">Controls brain</button>
+  <button class="quiz-btn" onclick="answer('wrong')">Stores oxygen</button>
+  <button class="quiz-btn" onclick="answer('correct')">Pumps blood</button>
+  <button class="quiz-btn" onclick="answer('wrong')">Controls thoughts</button>
 
-  <p id="result"></p>
+  <p id="result" class="result"></p>
 </div>
+
+<a href="index.html" class="back-btn">← Back to Home</a>
 
 </div>
 
 <script>
-function checkAnswer(answer) {
-  const result = document.getElementById("result");
+function answer(ans){
+  let result = document.getElementById("result");
 
-  if (answer === "correct") {
+  if(ans === "correct"){
     let score = localStorage.getItem("score") || 0;
-score++;
-localStorage.setItem("score", score);
-result.innerText = "✅ Correct!";
+    score++;
+    localStorage.setItem("score", score);
+
+    result.innerText = "✅ Correct! +1 score";
     result.style.color = "lightgreen";
   } else {
-    result.innerText = "❌ Try again!";
+    result.innerText = "❌ Wrong answer";
     result.style.color = "red";
   }
 }
