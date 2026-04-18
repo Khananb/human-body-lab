@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz · Human Body Lab</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <div class="neural-bg"></div>
+
+  <header class="expert-header">
+    <div class="logo-area">
+      <div class="brain-icon"><i class="fas fa-brain"></i></div>
+      <div class="logo-text">
+        <h1 id="quizTitle">Quiz</h1>
+        <div class="badge">TEST YOUR KNOWLEDGE</div>
+      </div>
+    </div>
+    <div class="stats-module">
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-info"><div class="label">XP</div><div class="value" id="xpDisplay">0</div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="quizContainer" class="expert-card">
+      <div id="questionArea">Loading questions...</div>
+      <div id="optionsArea" class="quiz-grid"></div>
+      <div id="resultArea" class="result-area" style="display:none;"></div>
+      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <button id="prevBtn" class="pill-link" style="display:none;"><i class="fas fa-chevron-left"></i> Prev</button>
+        <button id="nextBtn" class="pill-link">Next <i class="fas fa-chevron-right"></i></button>
+        <button id="submitBtn" class="pill-link" style="display:none;">Submit</button>
+      </div>
+      <div style="margin-top: 15px;"><span id="progressText">Question 1/10</span></div>
+    </div>
+    <a href="index.html" class="pill-link" style="margin-top:20px;"><i class="fas fa-arrow-left"></i> Back to Lab</a>
+  </main>
+
+  <script src="assets/js/particles.js"></script>
+  <script src="assets/js/scoreManager.js"></script>
+  <script src="assets/js/quizEngine.js"></script>
+  <script>
+    // Get system from URL
+    const params = new URLSearchParams(window.location.search);
+    const system = params.get('system') || 'heart';
+    document.getElementById('quizTitle').innerText = system.charAt(0).toUpperCase() + system.slice(1) + ' Quiz';
+    
+    // Update XP display
+    function updateXP() { document.getElementById('xpDisplay').innerText = parseInt(localStorage.getItem('labScore'))||0; }
+    updateXP();
+    window.addEventListener('storage', updateXP);
+
+    // Initialize quiz
+    initQuiz(system);
+  </script>
+</body>
+</html>
