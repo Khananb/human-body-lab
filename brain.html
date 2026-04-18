@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain - Human Body Lab</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+button {
+  background: #7c6aff;
+  border: none;
+  padding: 10px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🧠 Human Brain</h1>
+
+<div class="card">
+  <p>The brain controls all activities of the body including thinking, memory and movement.</p>
+</div>
+
+<div class="card">
+  <h3>Functions</h3>
+  <ul>
+    <li>Controls body</li>
+    <li>Stores memory</li>
+    <li>Processes information</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3>Quiz</h3>
+  <p>What does the brain do?</p>
+
+  <button onclick="check('wrong')">Pumps blood</button><br>
+  <button onclick="check('correct')">Controls body</button><br>
+  <button onclick="check('wrong')">Digests food</button>
+
+  <p id="result"></p>
+</div>
+
+</div>
+
+<script>
+function check(ans){
+  let r = document.getElementById("result");
+  if(ans=="correct"){
+    r.innerText="✅ Correct";
+    r.style.color="lightgreen";
+  } else {
+    r.innerText="❌ Wrong";
+    r.style.color="red";
+  }
+}
+</script>
+
+</body>
+</html>
