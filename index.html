@@ -83,6 +83,9 @@ a {
 
   </div>
 </div>
-
+<script>
+let score = localStorage.getItem("score") || 0;
+document.getElementById("score").innerText = score;
+</script>
 </body>
 </html>
