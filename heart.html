@@ -8,8 +8,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Three.js Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+      }
+    }
+  </script>
+  
   <style>
-    /* Same futuristic core styles as index.html, plus detail page specific */
+    /* ========== FUTURISTIC CORE STYLES ========== */
     :root {
       --bg-dark: #05070a;
       --bg-panel: #0a0f1a;
@@ -22,43 +33,212 @@
       --glass-border: rgba(0, 240, 255, 0.15);
       --glow: 0 0 20px rgba(0, 240, 255, 0.3);
     }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.5; }
-    #neural-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 20% 30%, #10182f, #05070a); }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    .glass-panel {
-      background: rgba(10, 15, 26, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin-bottom: 24px;
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background: var(--bg-dark); 
+      color: var(--text-primary); 
+      line-height: 1.5; 
+      min-height: 100vh;
     }
-    .back-link { display: inline-block; margin-bottom: 20px; color: var(--primary-cyan); text-decoration: none; }
+    
+    #neural-bg { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      z-index: -1; 
+      background: radial-gradient(circle at 20% 30%, #10182f, #05070a);
+    }
+    
+    .container { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 20px; 
+      position: relative;
+      z-index: 1;
+    }
+    
+    .glass-panel {
+      background: rgba(10, 15, 26, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    
+    .back-link { 
+      display: inline-block; 
+      margin-bottom: 20px; 
+      color: var(--primary-cyan); 
+      text-decoration: none;
+      font-weight: 500;
+    }
     .back-link:hover { text-shadow: var(--glow); }
-    h1 { font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #fff, var(--primary-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
-    .subtitle { color: var(--text-secondary); margin-bottom: 24px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--glass-border); }
-    .stat-value { font-size: 2rem; font-weight: 700; color: var(--primary-cyan); }
-    .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    
+    h1 { 
+      font-size: 3rem; 
+      font-weight: 700; 
+      background: linear-gradient(135deg, #fff, var(--primary-cyan)); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      margin-bottom: 8px; 
+    }
+    
+    .subtitle { 
+      color: var(--text-secondary); 
+      margin-bottom: 24px; 
+      font-size: 1.1rem;
+    }
+    
+    .stats-grid { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 16px; 
+      margin-bottom: 24px; 
+    }
+    
+    .stat-card { 
+      background: rgba(0,0,0,0.3); 
+      border-radius: 16px; 
+      padding: 16px; 
+      text-align: center; 
+      border: 1px solid var(--glass-border); 
+    }
+    
+    .stat-value { 
+      font-size: 2rem; 
+      font-weight: 700; 
+      color: var(--primary-cyan); 
+    }
+    
+    .tabs { 
+      display: flex; 
+      gap: 8px; 
+      margin-bottom: 24px; 
+      flex-wrap: wrap; 
+    }
+    
     .tab-btn {
-      background: transparent; border: 1px solid var(--glass-border); color: var(--text-secondary);
-      padding: 12px 24px; border-radius: 40px; cursor: pointer; font-size: 1rem; font-weight: 500;
+      background: transparent; 
+      border: 1px solid var(--glass-border); 
+      color: var(--text-secondary);
+      padding: 12px 24px; 
+      border-radius: 40px; 
+      cursor: pointer; 
+      font-size: 1rem; 
+      font-weight: 500;
       transition: all 0.2s;
     }
-    .tab-btn.active { background: var(--primary-cyan); color: var(--bg-dark); border-color: var(--primary-cyan); box-shadow: var(--glow); }
-    .tab-btn:hover:not(.active) { border-color: var(--primary-cyan); color: var(--primary-cyan); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .anatomy-list { list-style: none; }
-    .anatomy-list li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
-    .anatomy-list i { color: var(--primary-cyan); width: 24px; }
-    .function-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-    .highlight { color: var(--primary-cyan); font-weight: 600; }
-    .btn { background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue)); border: none; color: var(--bg-dark); font-weight: 600; padding: 14px 28px; border-radius: 40px; cursor: pointer; transition: all 0.2s; }
-    .btn:hover { box-shadow: var(--glow); transform: scale(1.02); }
-    .model-placeholder { background: #0a0f1a; border-radius: 20px; padding: 40px; text-align: center; border: 1px dashed var(--glass-border); }
+    
+    .tab-btn.active { 
+      background: var(--primary-cyan); 
+      color: var(--bg-dark); 
+      border-color: var(--primary-cyan); 
+      box-shadow: var(--glow); 
+    }
+    
+    .tab-btn:hover:not(.active) { 
+      border-color: var(--primary-cyan); 
+      color: var(--primary-cyan); 
+    }
+    
+    .tab-content { 
+      display: none; 
+    }
+    
+    .tab-content.active { 
+      display: block; 
+    }
+    
+    .function-card { 
+      background: rgba(0,0,0,0.2); 
+      border-radius: 16px; 
+      padding: 20px; 
+      margin-bottom: 16px; 
+      border-left: 3px solid var(--primary-cyan);
+    }
+    
+    .highlight { 
+      color: var(--primary-cyan); 
+      font-weight: 600; 
+    }
+    
+    .btn { 
+      background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue)); 
+      border: none; 
+      color: var(--bg-dark); 
+      font-weight: 600; 
+      padding: 14px 28px; 
+      border-radius: 40px; 
+      cursor: pointer; 
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .btn:hover { 
+      box-shadow: var(--glow); 
+      transform: scale(1.02); 
+    }
+    
+    .anatomy-list {
+      list-style: none;
+    }
+    
+    .anatomy-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .anatomy-list i {
+      color: var(--primary-cyan);
+      width: 24px;
+    }
+    
+    /* 3D Viewer Container */
+    #model-container {
+      width: 100%;
+      height: 450px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #0a0f1a;
+      border: 1px solid var(--glass-border);
+      margin-top: 16px;
+    }
+    
+    .loading-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-secondary);
+    }
+    
+    .loading-placeholder i {
+      font-size: 3rem;
+      color: var(--primary-cyan);
+      margin-bottom: 16px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      h1 { font-size: 2.2rem; }
+    }
   </style>
 </head>
 <body>
   <canvas id="neural-bg"></canvas>
+  
   <div class="container">
     <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Neural Atlas</a>
     
@@ -80,8 +260,9 @@
         <button class="tab-btn" data-tab="3d">3D Model</button>
       </div>
       
+      <!-- Overview Tab -->
       <div id="overview" class="tab-content active">
-        <p style="margin-bottom: 20px;">The heart is a muscular organ about the size of a fist, located just behind and slightly left of the breastbone. It pumps blood through the blood vessels of the circulatory system, providing the body with oxygen and nutrients while removing metabolic wastes.[reference:2]</p>
+        <p style="margin-bottom: 20px;">The heart is a muscular organ about the size of a fist, located just behind and slightly left of the breastbone. It pumps blood through the blood vessels of the circulatory system, providing the body with oxygen and nutrients while removing metabolic wastes.</p>
         <div class="function-card">
           <h3><i class="fas fa-heartbeat" style="color: var(--primary-cyan);"></i> Primary Functions</h3>
           <ul style="margin-left: 20px; margin-top: 10px;">
@@ -91,9 +272,10 @@
             <li>Endocrine function (releases ANP to regulate blood pressure)</li>
           </ul>
         </div>
-        <p><span class="highlight">Fun Fact:</span> The heart starts beating at just 4 weeks of gestation and will beat approximately 2.5 billion times in an average lifetime.[reference:3]</p>
+        <p><span class="highlight">Fun Fact:</span> The heart starts beating at just 4 weeks of gestation and will beat approximately 2.5 billion times in an average lifetime.</p>
       </div>
       
+      <!-- Anatomy Tab -->
       <div id="anatomy" class="tab-content">
         <h3>Chambers & Valves</h3>
         <ul class="anatomy-list">
@@ -111,16 +293,17 @@
         </ul>
       </div>
       
+      <!-- Physiology Tab -->
       <div id="physiology" class="tab-content">
         <div class="function-card">
           <h3><i class="fas fa-bolt"></i> Cardiac Conduction System</h3>
-          <p>The heartbeat is initiated by the sinoatrial (SA) node, the natural pacemaker. The electrical impulse travels through the atria, then to the atrioventricular (AV) node, Bundle of His, and Purkinje fibers, causing coordinated contraction.[reference:4]</p>
+          <p>The heartbeat is initiated by the sinoatrial (SA) node, the natural pacemaker. The electrical impulse travels through the atria, then to the atrioventricular (AV) node, Bundle of His, and Purkinje fibers, causing coordinated contraction.</p>
         </div>
         <div class="function-card">
           <h3><i class="fas fa-tachometer-alt"></i> Cardiac Cycle</h3>
           <p><strong>Systole:</strong> Contraction phase, blood is ejected.<br>
           <strong>Diastole:</strong> Relaxation phase, chambers fill with blood.</p>
-          <p>Cardiac Output (CO) = Heart Rate (HR) × Stroke Volume (SV). Normal resting CO is about 5 L/min.[reference:5]</p>
+          <p>Cardiac Output (CO) = Heart Rate (HR) × Stroke Volume (SV). Normal resting CO is about 5 L/min.</p>
         </div>
         <div class="function-card">
           <h3><i class="fas fa-exclamation-triangle"></i> Common Disorders</h3>
@@ -128,54 +311,102 @@
         </div>
       </div>
       
+      <!-- 3D Model Tab -->
       <div id="3d" class="tab-content">
-        <div class="model-placeholder">
-          <i class="fas fa-cube" style="font-size: 4rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
-          <h3>Interactive 3D Heart Model</h3>
-          <p style="margin: 20px 0;">Replace this placeholder with your Sketchfab embed or Three.js viewer. When your 20GB hosting is ready, upload your .glb model here.</p>
-          <p style="font-size: 0.9rem; color: var(--text-secondary);">Rotate, zoom, and explore the heart's anatomy.</p>
-          <button class="btn" style="margin-top: 20px;" onclick="markComplete()"><i class="fas fa-check-circle"></i> Mark as Completed (+20 XP)</button>
+        <div id="model-container">
+          <div class="loading-placeholder">
+            <i class="fas fa-spinner fa-pulse"></i>
+            <p>Loading 3D Heart Model...</p>
+          </div>
         </div>
+        <div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
+          <button class="btn" onclick="markComplete()"><i class="fas fa-check-circle"></i> Mark as Completed (+20 XP)</button>
+        </div>
+        <p style="margin-top: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">
+          <i class="fas fa-mouse"></i> Drag to rotate · Scroll to zoom
+        </p>
       </div>
     </div>
   </div>
-  
+
+  <!-- Neural Background Animation -->
   <script>
-    // Simple neural background (same as index)
     (function() {
       const canvas = document.getElementById('neural-bg');
       const ctx = canvas.getContext('2d');
-      let width, height, particles = [];
-      function resizeCanvas() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+      let width, height;
+      let particles = [];
+      
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      
       function initParticles(count = 60) {
         particles = [];
         for (let i = 0; i < count; i++) {
-          particles.push({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.15, size: Math.random() * 2 + 1 });
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: (Math.random() - 0.5) * 0.15,
+            size: Math.random() * 2 + 1
+          });
         }
       }
+      
       function drawParticles() {
         ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = '#00f0ff'; ctx.shadowColor = '#00f0ff'; ctx.shadowBlur = 6;
+        ctx.fillStyle = '#00f0ff';
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 6;
+        
         particles.forEach(p => {
-          p.x += p.vx; p.y += p.vy;
+          p.x += p.vx;
+          p.y += p.vy;
+          
           if (p.x < 0 || p.x > width) p.vx *= -1;
           if (p.y < 0 || p.y > height) p.vy *= -1;
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+          
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
         });
-        ctx.shadowBlur = 2; ctx.strokeStyle = 'rgba(0, 240, 255, 0.05)'; ctx.lineWidth = 0.5;
+        
+        ctx.shadowBlur = 2;
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
+        ctx.lineWidth = 0.5;
         for (let i = 0; i < particles.length; i++) {
           for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-            if (Math.sqrt(dx*dx + dy*dy) < 100) { ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); }
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
           }
         }
         requestAnimationFrame(drawParticles);
       }
-      window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
-      resizeCanvas(); initParticles(); drawParticles();
+      
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        initParticles();
+      });
+      
+      resizeCanvas();
+      initParticles();
+      drawParticles();
     })();
-    
-    // Tab switching
+  </script>
+
+  <!-- Tab Switching Logic -->
+  <script>
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -192,6 +423,144 @@
       alert('Module completed! +20 XP. Total XP: ' + xp);
       window.location.href = 'index.html';
     }
+  </script>
+
+  <!-- Three.js 3D Viewer (Module) -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    const container = document.getElementById('model-container');
+    
+    // Clear loading placeholder (will be replaced by canvas)
+    container.innerHTML = '';
+
+    // 1. Scene, Camera, Renderer
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0f1a); // Match theme
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(3, 2, 5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    // 2. Lighting
+    const ambientLight = new THREE.AmbientLight(0x404060);
+    scene.add(ambientLight);
+    
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
+    dirLight1.position.set(2, 5, 3);
+    scene.add(dirLight1);
+    
+    const dirLight2 = new THREE.DirectionalLight(0xffaa88, 0.8);
+    dirLight2.position.set(-3, 2, 1);
+    scene.add(dirLight2);
+    
+    const pointLight = new THREE.PointLight(0x00f0ff, 0.6);
+    pointLight.position.set(1, 2, 2);
+    scene.add(pointLight);
+    
+    // Fill light from below
+    const fillLight = new THREE.PointLight(0x4466cc, 0.4);
+    fillLight.position.set(-1, -1, 2);
+    scene.add(fillLight);
+
+    // 3. Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.5;
+    controls.enableZoom = true;
+    controls.enablePan = false;
+    controls.target.set(0, 0.5, 0);
+
+    // 4. Load Model
+    const loader = new GLTFLoader();
+    // 🔁 IMPORTANT: Change this path to your actual model location
+    const modelPath = 'models/heart.glb';
+    
+    // Show a loading indicator while fetching
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'loading-placeholder';
+    loadingDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i><p>Loading 3D Model...</p>';
+    loadingDiv.style.position = 'absolute';
+    loadingDiv.style.top = '0';
+    loadingDiv.style.left = '0';
+    loadingDiv.style.width = '100%';
+    loadingDiv.style.height = '100%';
+    loadingDiv.style.display = 'flex';
+    loadingDiv.style.background = '#0a0f1a';
+    container.style.position = 'relative';
+    container.appendChild(loadingDiv);
+
+    loader.load(
+      modelPath,
+      (gltf) => {
+        // Remove loading indicator
+        if (loadingDiv) loadingDiv.remove();
+        
+        const model = gltf.scene;
+        scene.add(model);
+        
+        // Auto-scale and center
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 2.5 / maxDim; // Fit nicely in view
+        model.scale.set(scale, scale, scale);
+        
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+        model.position.y += 0.2; // Slight upward adjustment
+        
+        // Optional: Add subtle glow effect to model (if materials exist)
+        model.traverse((node) => {
+          if (node.isMesh) {
+            node.material.emissive = new THREE.Color(0x112233);
+            node.material.emissiveIntensity = 0.1;
+          }
+        });
+      },
+      (xhr) => {
+        const percent = Math.floor((xhr.loaded / xhr.total) * 100);
+        if (loadingDiv) {
+          loadingDiv.innerHTML = `<i class="fas fa-spinner fa-pulse"></i><p>Loading: ${percent}%</p>`;
+        }
+      },
+      (error) => {
+        console.error('Model load failed:', error);
+        if (loadingDiv) {
+          loadingDiv.innerHTML = `
+            <i class="fas fa-exclamation-triangle" style="color: #ff4d4d;"></i>
+            <p style="color: #ff4d4d;">3D model not found.</p>
+            <p style="font-size: 0.9rem; margin-top: 8px;">Will be available after 20GB hosting upgrade.</p>
+            <p style="font-size: 0.8rem; margin-top: 16px; color: #888;">Path: ${modelPath}</p>
+          `;
+        }
+      }
+    );
+
+    // 5. Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // 6. Handle Resize
+    window.addEventListener('resize', () => {
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    });
   </script>
 </body>
 </html>
