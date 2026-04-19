@@ -2,1542 +2,323 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Human Body Lab · Expert Atlas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human Body Lab | Neural Atlas</title>
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* ========== FUTURISTIC CORE STYLES ========== */
     :root {
-      color-scheme: dark;
-      --bg: #06080d;
-      --panel: rgba(13, 20, 30, 0.78);
-      --panel-strong: rgba(18, 27, 38, 0.92);
-      --line: rgba(190, 216, 255, 0.18);
-      --line-hot: rgba(125, 231, 215, 0.55);
-      --text: #f3f6fb;
-      --muted: #9eabbf;
-      --muted-strong: #c1cad8;
-      --blue: #86b7ff;
-      --teal: #7de7d7;
-      --coral: #ff8f78;
-      --amber: #ffd76a;
-      --green: #9be37d;
-      --shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
-      --radius: 8px;
+      --bg-dark: #05070a;
+      --bg-panel: #0a0f1a;
+      --primary-cyan: #00f0ff;
+      --primary-blue: #3f7ce5;
+      --accent-pink: #ff007f;
+      --accent-purple: #9d4edd;
+      --text-primary: #ffffff;
+      --text-secondary: #a0b3d9;
+      --glass-border: rgba(0, 240, 255, 0.15);
+      --glow: 0 0 20px rgba(0, 240, 255, 0.3);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      min-height: 100vh;
-      overflow-x: hidden;
-      background:
-        radial-gradient(circle at 16% 18%, rgba(125, 231, 215, 0.14), transparent 31rem),
-        radial-gradient(circle at 85% 4%, rgba(255, 143, 120, 0.11), transparent 30rem),
-        linear-gradient(145deg, #06080d 0%, #09111a 48%, #06080d 100%);
-      color: var(--text);
-      font-family: Inter, "Segoe UI", system-ui, sans-serif;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
       line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
     }
 
-    button,
-    input,
-    a {
-      font: inherit;
+    /* Animated Background */
+    #neural-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1; background: radial-gradient(circle at 20% 30%, #10182f, #05070a);
     }
 
-    button {
-      color: inherit;
+    /* Glassmorphism Panel */
+    .glass-panel {
+      background: rgba(10, 15, 26, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 24px;
+      transition: all 0.3s ease;
     }
+    .glass-panel:hover { border-color: rgba(0, 240, 255, 0.4); box-shadow: var(--glow); }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    /* Layout */
+    .container { max-width: 1440px; margin: 0 auto; padding: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .logo h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #fff, var(--primary-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo span { font-size: 1rem; color: var(--text-secondary); display: block; }
+    .stats { display: flex; gap: 30px; }
+    .stat-item { text-align: center; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--primary-cyan); }
+    .stat-label { font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
 
-    .neural-bg,
-    #particles {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .neural-bg {
-      z-index: -3;
-      background:
-        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
-      background-size: 54px 54px;
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.4));
-    }
-
-    #particles {
-      z-index: -2;
-      opacity: 0.62;
-    }
-
-    .app-shell {
-      width: min(1440px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 22px 0 44px;
-    }
-
-    .expert-header {
+    /* System Grid */
+    .systems-grid {
       display: grid;
-      grid-template-columns: minmax(260px, 1fr) auto;
-      align-items: center;
-      gap: 20px;
-      padding: 18px 0 24px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
     }
 
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
-    }
-
-    .brain-icon {
-      display: grid;
-      width: 52px;
-      height: 52px;
-      flex: 0 0 auto;
-      place-items: center;
-      border: 1px solid rgba(134, 183, 255, 0.35);
-      border-radius: var(--radius);
-      background: linear-gradient(145deg, rgba(134, 183, 255, 0.18), rgba(125, 231, 215, 0.10));
-      color: var(--teal);
-      font-size: 1.75rem;
-      box-shadow: 0 0 26px rgba(125, 231, 215, 0.18);
-    }
-
-    .logo-text h1 {
-      color: var(--text);
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: 0;
-      line-height: 1.08;
-    }
-
-    .logo-text .badge {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0;
-      text-transform: uppercase;
-    }
-
-    .stats-module {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(116px, 1fr));
-      gap: 10px;
-      width: min(520px, 100%);
-    }
-
-    .stat-item {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      align-items: center;
-      gap: 10px;
-      min-height: 66px;
-      padding: 10px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(10, 16, 24, 0.74);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
-    }
-
-    .stat-icon {
-      display: grid;
-      width: 36px;
-      height: 36px;
-      place-items: center;
-      border: 1px solid rgba(125, 231, 215, 0.28);
-      border-radius: var(--radius);
-      background: rgba(125, 231, 215, 0.08);
-      color: var(--teal);
-      font-size: 1rem;
-    }
-
-    .stat-info .label {
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0;
-      text-transform: uppercase;
-    }
-
-    .stat-info .value {
-      color: var(--text);
-      font-size: 1.34rem;
-      font-weight: 700;
-      line-height: 1.15;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: minmax(300px, 430px) minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
-    }
-
-    .atlas-visual,
-    .atlas-main,
-    .detail-panel,
-    .score-panel {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px) saturate(140%);
-    }
-
-    .atlas-visual {
-      position: sticky;
-      top: 18px;
-      display: grid;
-      gap: 18px;
-      min-height: 720px;
-      padding: 18px;
-      overflow: hidden;
-    }
-
-    .visual-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .visual-title h2,
-    .section-title h2 {
-      color: var(--text);
-      font-size: 1.35rem;
-      font-weight: 650;
-      letter-spacing: 0;
-    }
-
-    .visual-title h2 i,
-    .section-title h2 i {
-      color: var(--teal);
-      margin-right: 8px;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      min-height: 34px;
-      padding: 7px 10px;
-      border: 1px solid rgba(125, 231, 215, 0.28);
-      border-radius: var(--radius);
-      background: rgba(125, 231, 215, 0.08);
-      color: var(--muted-strong);
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
-
-    .body-stage {
-      position: relative;
-      display: grid;
-      min-height: 430px;
-      place-items: center;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius);
-      background:
-        radial-gradient(circle at center, rgba(134, 183, 255, 0.12), transparent 17rem),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
-      overflow: hidden;
-    }
-
-    .body-stage::before {
-      content: "";
-      position: absolute;
-      inset: 28px 38px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 50%;
-      transform: rotate(-8deg);
-    }
-
-    .body-figure {
-      width: min(260px, 72%);
-      height: auto;
-      filter: drop-shadow(0 28px 42px rgba(0, 0, 0, 0.42));
-      isolation: isolate;
-    }
-
-    .figure-base {
-      fill: rgba(243, 246, 251, 0.08);
-      stroke: rgba(243, 246, 251, 0.2);
-      stroke-width: 2;
-    }
-
-    .organ {
-      opacity: 0.72;
-      transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
-      transform-box: fill-box;
-      transform-origin: center;
-    }
-
-    .organ[data-system="brain"] { fill: var(--blue); }
-    .organ[data-system="lungs"] { fill: var(--teal); }
-    .organ[data-system="heart"] { fill: var(--coral); }
-    .organ[data-system="skeleton"] { fill: #f1e5c9; }
-    .organ[data-system="muscles"] { fill: #ffb07a; }
-    .organ[data-system="digestive"] { fill: var(--green); }
-
-    .body-figure[data-active="brain"] .organ[data-system="brain"],
-    .body-figure[data-active="lungs"] .organ[data-system="lungs"],
-    .body-figure[data-active="heart"] .organ[data-system="heart"],
-    .body-figure[data-active="skeleton"] .organ[data-system="skeleton"],
-    .body-figure[data-active="muscles"] .organ[data-system="muscles"],
-    .body-figure[data-active="digestive"] .organ[data-system="digestive"] {
-      opacity: 1;
-      transform: scale(1.08);
-      filter: drop-shadow(0 0 14px currentColor);
-    }
-
-    .hotspot {
-      position: absolute;
-      display: grid;
-      width: 34px;
-      height: 34px;
-      place-items: center;
-      border: 1px solid rgba(255, 255, 255, 0.38);
-      border-radius: 50%;
-      background: rgba(6, 8, 13, 0.74);
-      color: var(--text);
+    .system-card {
+      background: rgba(10, 15, 26, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
       cursor: pointer;
-      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
-    }
-
-    .hotspot:hover,
-    .hotspot:focus-visible,
-    .hotspot.is-active {
-      transform: translateY(-2px) scale(1.08);
-      border-color: var(--line-hot);
-      background: rgba(125, 231, 215, 0.18);
-      outline: none;
-    }
-
-    .hotspot[data-system="brain"] { left: 50%; top: 12%; transform: translateX(-50%); }
-    .hotspot[data-system="lungs"] { left: 41%; top: 37%; }
-    .hotspot[data-system="heart"] { left: 52%; top: 43%; }
-    .hotspot[data-system="skeleton"] { left: 63%; top: 58%; }
-    .hotspot[data-system="muscles"] { left: 29%; top: 55%; }
-    .hotspot[data-system="digestive"] { left: 50%; top: 58%; transform: translateX(-50%); }
-
-    .detail-panel {
-      display: grid;
-      gap: 16px;
-      min-height: 210px;
-      padding: 18px;
-    }
-
-    .detail-kicker {
-      color: var(--teal);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0;
-      text-transform: uppercase;
-    }
-
-    .detail-panel h3 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      line-height: 1.05;
-    }
-
-    .detail-panel p {
-      color: var(--muted-strong);
-      font-size: 0.98rem;
-    }
-
-    .detail-meta {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .mini-metric {
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: var(--radius);
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.035);
-    }
-
-    .mini-metric span {
-      display: block;
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .mini-metric strong {
-      display: block;
-      margin-top: 4px;
-      color: var(--text);
-      font-size: 0.98rem;
-    }
-
-    .detail-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .control-button,
-    .module-link,
-    .filter-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 40px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.055);
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 650;
-      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
-    }
-
-    .control-button,
-    .module-link {
-      padding: 0 14px;
-    }
-
-    .filter-button {
-      min-width: 96px;
-      padding: 0 12px;
-    }
-
-    .control-button:hover,
-    .module-link:hover,
-    .filter-button:hover,
-    .control-button:focus-visible,
-    .module-link:focus-visible,
-    .filter-button:focus-visible {
-      transform: translateY(-1px);
-      border-color: var(--line-hot);
-      background: rgba(125, 231, 215, 0.12);
-      outline: none;
-    }
-
-    .control-button.primary,
-    .module-link.primary {
-      border-color: rgba(125, 231, 215, 0.52);
-      background: linear-gradient(135deg, rgba(125, 231, 215, 0.22), rgba(134, 183, 255, 0.14));
-    }
-
-    .control-button:disabled,
-    .module-link[aria-disabled="true"] {
-      cursor: not-allowed;
-      opacity: 0.54;
-      transform: none;
-    }
-
-    .score-panel {
-      display: grid;
-      gap: 14px;
-      padding: 16px;
-    }
-
-    .score-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .score-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--muted-strong);
-      font-weight: 700;
-    }
-
-    .score-label i {
-      color: var(--amber);
-    }
-
-    .score-number {
-      color: var(--amber);
-      font-size: 2.4rem;
-      font-weight: 750;
-      line-height: 1;
-    }
-
-    .progress-track {
+      transition: all 0.25s ease;
       position: relative;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.09);
       overflow: hidden;
     }
+    .system-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary-cyan);
+      box-shadow: var(--glow);
+      background: rgba(20, 30, 50, 0.8);
+    }
+    .system-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+      background: linear-gradient(to bottom, var(--primary-cyan), var(--accent-purple));
+    }
+    .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .card-icon { font-size: 2.5rem; color: var(--primary-cyan); filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5)); }
+    .card-title { font-size: 1.5rem; font-weight: 600; }
+    .card-subtitle { font-size: 0.9rem; color: var(--text-secondary); }
+    .card-stats { display: flex; gap: 15px; margin: 15px 0; }
+    .organ-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .organ-tag { background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 20px; padding: 5px 12px; font-size: 0.8rem; color: var(--primary-cyan); }
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 15px 0; overflow: hidden; }
+    .progress-fill { height: 100%; width: 60%; background: linear-gradient(90deg, var(--primary-cyan), var(--accent-purple)); border-radius: 3px; }
 
-    .progress-fill {
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--coral), var(--amber), var(--teal));
-      transition: width 260ms ease;
+    /* Search Bar */
+    .search-container { margin: 20px 0; }
+    .search-box {
+      width: 100%; padding: 16px 24px;
+      background: rgba(10, 15, 26, 0.8); backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border); border-radius: 40px;
+      color: white; font-size: 1rem;
+    }
+    .search-box::placeholder { color: var(--text-secondary); }
+    .search-box:focus { outline: none; border-color: var(--primary-cyan); box-shadow: var(--glow); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header { flex-direction: column; align-items: start; gap: 15px; }
+      .logo h1 { font-size: 2rem; }
     }
 
-    .score-foot {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 0.86rem;
-    }
-
-    .atlas-main {
-      display: grid;
-      gap: 18px;
-      padding: 18px;
-      min-width: 0;
-    }
-
-    .topbar {
-      display: grid;
-      grid-template-columns: minmax(220px, 1fr) auto;
-      gap: 14px;
-      align-items: end;
-    }
-
-    .section-title {
-      display: grid;
-      gap: 5px;
-    }
-
-    .section-title p {
-      color: var(--muted);
-      max-width: 66ch;
-      font-size: 0.96rem;
-    }
-
-    .tools {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .search-wrap {
-      position: relative;
-      min-width: 250px;
-    }
-
-    .search-wrap i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      color: var(--muted);
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
-
-    .search-wrap input {
-      width: 100%;
-      min-height: 42px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text);
-      padding: 0 12px 0 38px;
-      outline: none;
-    }
-
-    .search-wrap input:focus {
-      border-color: var(--line-hot);
-      box-shadow: 0 0 0 3px rgba(125, 231, 215, 0.1);
-    }
-
-    .filters {
-      display: inline-grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
-      padding: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
-    }
-
-    .filter-button {
-      min-height: 34px;
-      border-color: transparent;
-      background: transparent;
-      color: var(--muted-strong);
-      font-size: 0.86rem;
-    }
-
-    .filter-button.is-active {
-      background: rgba(125, 231, 215, 0.16);
-      color: var(--text);
-    }
-
-    .result-status {
-      min-height: 20px;
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    .system-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .expert-card {
-      position: relative;
-      display: grid;
-      gap: 16px;
-      min-height: 265px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
-      overflow: hidden;
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-    }
-
-    .expert-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(420px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(125, 231, 215, 0.13), transparent 52%);
-      opacity: 0;
-      transition: opacity 180ms ease;
-      pointer-events: none;
-    }
-
-    .expert-card:hover,
-    .expert-card.is-active,
-    .expert-card:focus-within {
-      transform: translateY(-4px);
-      border-color: var(--line-hot);
-      background: rgba(255, 255, 255, 0.07);
-    }
-
-    .expert-card:hover::before,
-    .expert-card.is-active::before {
-      opacity: 1;
-    }
-
-    .expert-card.is-hidden {
-      display: none;
-    }
-
-    .card-top {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .card-icon {
-      display: grid;
-      width: 48px;
-      height: 48px;
-      place-items: center;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.055);
-      color: var(--blue);
-      font-size: 1.45rem;
-    }
-
-    .expert-card[data-accent="coral"] .card-icon { color: var(--coral); }
-    .expert-card[data-accent="teal"] .card-icon { color: var(--teal); }
-    .expert-card[data-accent="amber"] .card-icon { color: var(--amber); }
-    .expert-card[data-accent="green"] .card-icon { color: var(--green); }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 28px;
-      padding: 5px 8px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius);
-      color: var(--muted-strong);
-      font-size: 0.76rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .status-badge.ready {
-      border-color: rgba(125, 231, 215, 0.28);
-      background: rgba(125, 231, 215, 0.09);
-      color: var(--teal);
-    }
-
-    .status-badge.soon {
-      border-color: rgba(255, 215, 106, 0.28);
-      background: rgba(255, 215, 106, 0.08);
-      color: var(--amber);
-    }
-
-    .status-badge.done {
-      border-color: rgba(155, 227, 125, 0.34);
-      background: rgba(155, 227, 125, 0.11);
-      color: var(--green);
-    }
-
-    .card-copy {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      gap: 8px;
-    }
-
-    .expert-card h3 {
-      color: var(--text);
-      font-size: 1.28rem;
-      font-weight: 700;
-      letter-spacing: 0;
-      line-height: 1.15;
-    }
-
-    .expert-card p {
-      color: var(--muted-strong);
-      font-size: 0.93rem;
-    }
-
-    .tag-list {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: auto;
-    }
-
-    .tag-list span {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.045);
-      color: var(--muted);
-      padding: 4px 7px;
-      font-size: 0.76rem;
-      font-weight: 650;
-    }
-
-    .card-actions {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .select-card {
-      min-height: 40px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.055);
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 700;
-      transition: border-color 150ms ease, background 150ms ease;
-    }
-
-    .select-card:hover,
-    .select-card:focus-visible {
-      border-color: var(--line-hot);
-      background: rgba(125, 231, 215, 0.12);
-      outline: none;
-    }
-
-    .xp-chip {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 40px;
-      min-width: 64px;
-      border: 1px solid rgba(255, 215, 106, 0.22);
-      border-radius: var(--radius);
-      background: rgba(255, 215, 106, 0.08);
-      color: var(--amber);
-      font-size: 0.82rem;
-      font-weight: 800;
-    }
-
-    .empty-state {
-      display: none;
-      min-height: 160px;
-      place-items: center;
-      border: 1px dashed rgba(255, 255, 255, 0.15);
-      border-radius: var(--radius);
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .empty-state.is-visible {
-      display: grid;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    @media (max-width: 1120px) {
-      .workspace {
-        grid-template-columns: 1fr;
-      }
-
-      .atlas-visual {
-        position: relative;
-        top: auto;
-        min-height: auto;
-        grid-template-columns: minmax(280px, 0.9fr) minmax(300px, 1fr);
-      }
-
-      .visual-title,
-      .score-panel {
-        grid-column: 1 / -1;
-      }
-
-      .body-stage {
-        min-height: 390px;
-      }
-    }
-
-    @media (max-width: 920px) {
-      .expert-header,
-      .topbar {
-        grid-template-columns: 1fr;
-      }
-
-      .tools {
-        justify-content: flex-start;
-      }
-
-      .stats-module {
-        width: 100%;
-      }
-
-      .system-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .atlas-visual {
-        grid-template-columns: 1fr;
-      }
-
-      .visual-title,
-      .score-panel {
-        grid-column: auto;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .app-shell {
-        width: min(100% - 24px, 1440px);
-        padding-top: 14px;
-      }
-
-      .logo-text h1 {
-        font-size: 1.38rem;
-      }
-
-      .stats-module,
-      .system-grid,
-      .detail-meta {
-        grid-template-columns: 1fr;
-      }
-
-      .tools,
-      .search-wrap,
-      .filters {
-        width: 100%;
-      }
-
-      .filter-button {
-        min-width: 0;
-      }
-
-      .body-stage {
-        min-height: 340px;
-      }
-
-      .hotspot {
-        width: 32px;
-        height: 32px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
-      }
-
-      #particles {
-        opacity: 0.25;
-      }
-    }
+    /* Loading animation */
+    .loading { text-align: center; padding: 50px; color: var(--primary-cyan); }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <canvas id="particles" aria-hidden="true"></canvas>
-  <div class="neural-bg" aria-hidden="true"></div>
+  <canvas id="neural-bg"></canvas>
 
-  <div class="app-shell">
-    <header class="expert-header">
-      <div class="logo-area">
-        <div class="brain-icon" aria-hidden="true"><i class="fa-solid fa-brain"></i></div>
-        <div class="logo-text">
-          <h1>Human Body Lab</h1>
-          <div class="badge">Expert Atlas · v2.1</div>
+  <div class="container">
+    <!-- Header -->
+    <div class="header glass-panel">
+      <div class="logo">
+        <h1>HUMAN BODY LAB</h1>
+        <span>Neural Atlas // Interactive 3D Physiology</span>
+      </div>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value" id="total-systems">11</div>
+          <div class="stat-label">Systems</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="total-organs">78</div>
+          <div class="stat-label">Organs</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="xp-score">0</div>
+          <div class="stat-label">Lab XP</div>
         </div>
       </div>
+    </div>
 
-      <section class="stats-module" aria-label="Atlas progress">
-        <div class="stat-item">
-          <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-dna"></i></div>
-          <div class="stat-info">
-            <div class="label">Systems</div>
-            <div class="value" id="systemCount">6</div>
-          </div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-vial-circle-check"></i></div>
-          <div class="stat-info">
-            <div class="label">Ready</div>
-            <div class="value" id="readyCount">3</div>
-          </div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></div>
-          <div class="stat-info">
-            <div class="label">Mastery</div>
-            <div class="value" id="masteryLevel">I</div>
-          </div>
-        </div>
-      </section>
-    </header>
+    <!-- Search & Filter -->
+    <div class="search-container">
+      <input type="text" class="search-box" placeholder="Search systems, organs, or nerves..." id="search-input">
+    </div>
 
-    <main class="workspace">
-      <aside class="atlas-visual" aria-label="Interactive body atlas">
-        <div class="visual-title">
-          <h2><i class="fa-solid fa-person-rays"></i>Atlas Focus</h2>
-          <span class="status-pill" id="focusStatus"><i class="fa-solid fa-circle-dot"></i> Heart</span>
-        </div>
-
-        <div class="body-stage">
-          <svg class="body-figure" id="bodyFigure" data-active="heart" viewBox="0 0 260 560" role="img" aria-label="Simplified human body map">
-            <path class="figure-base" d="M130 20c28 0 48 21 48 49s-20 49-48 49-48-21-48-49 20-49 48-49Z"/>
-            <path class="figure-base" d="M92 128h76c22 0 41 16 45 38l16 92c3 20-9 39-28 44l-18 5v205c0 16-13 28-29 28-12 0-23-8-27-20l-17-113-17 113c-4 12-15 20-27 20-16 0-29-12-29-28V307l-18-5c-19-5-31-24-28-44l16-92c4-22 23-38 45-38Z"/>
-            <path class="organ" data-system="brain" d="M105 61c0-19 13-31 29-31 11 0 21 6 26 16 11 1 20 12 20 26 0 16-11 29-26 30H110c-16-2-28-15-28-31 0-13 8-24 23-26v16Z"/>
-            <path class="organ" data-system="lungs" d="M99 171c-16 9-28 34-28 65 0 23 9 41 27 43 18 2 25-19 25-48v-55c0-10-11-11-24-5Zm62 0c16 9 28 34 28 65 0 23-9 41-27 43-18 2-25-19-25-48v-55c0-10 11-11 24-5Z"/>
-            <path class="organ" data-system="heart" d="M130 224c-22-20-43-8-43 14 0 28 43 51 43 51s43-23 43-51c0-22-21-34-43-14Z"/>
-            <path class="organ" data-system="digestive" d="M104 299c0-18 13-31 31-31h1c18 0 32 14 32 33 0 12-6 21-17 27 16 7 27 20 27 38 0 22-18 40-48 40-26 0-47-15-47-38 0-17 10-31 26-38-4-8-5-17-5-31Z"/>
-            <path class="organ" data-system="skeleton" d="M128 126h7v275h-7V126Zm-38 48h82v7H90v-7Zm15 97h52v7h-52v-7Zm-5 92h61v7h-61v-7Z"/>
-            <path class="organ" data-system="muscles" d="M74 174c-20 34-23 92-5 112 11 12 30 1 30-18 0-33-4-66-25-94Zm112 0c20 34 23 92 5 112-11 12-30 1-30-18 0-33 4-66 25-94Zm-74 254c-20 36-23 82-6 101 12 13 31 1 31-18 0-30-5-59-25-83Zm36 0c20 36 23 82 6 101-12 13-31 1-31-18 0-30 5-59 25-83Z"/>
-          </svg>
-
-          <button class="hotspot is-active" type="button" data-system="heart" aria-label="Focus heart"><i class="fa-solid fa-heart-pulse"></i></button>
-          <button class="hotspot" type="button" data-system="brain" aria-label="Focus brain"><i class="fa-solid fa-brain"></i></button>
-          <button class="hotspot" type="button" data-system="lungs" aria-label="Focus lungs"><i class="fa-solid fa-lungs"></i></button>
-          <button class="hotspot" type="button" data-system="skeleton" aria-label="Focus skeleton"><i class="fa-solid fa-bone"></i></button>
-          <button class="hotspot" type="button" data-system="muscles" aria-label="Focus muscles"><i class="fa-solid fa-dumbbell"></i></button>
-          <button class="hotspot" type="button" data-system="digestive" aria-label="Focus digestive system"><i class="fa-solid fa-apple-whole"></i></button>
-        </div>
-
-        <section class="detail-panel" aria-live="polite">
-          <div class="detail-kicker" id="detailKicker">Cardiovascular System</div>
-          <h3 id="detailName">Heart</h3>
-          <p id="detailSummary">Cardiovascular dynamics, blood flow, valve timing, and electrical conduction.</p>
-          <div class="detail-meta">
-            <div class="mini-metric">
-              <span>Signal</span>
-              <strong id="detailMetric">~100k beats/day</strong>
-            </div>
-            <div class="mini-metric">
-              <span>Lab XP</span>
-              <strong id="detailXp">+20 XP</strong>
-            </div>
-          </div>
-          <div class="detail-actions">
-            <a class="module-link primary" id="moduleLink" href="heart.html"><i class="fa-solid fa-arrow-up-right-from-square"></i>Open Module</a>
-            <button class="control-button" id="completeButton" type="button"><i class="fa-solid fa-check"></i>Complete</button>
-          </div>
-        </section>
-
-        <section class="score-panel" aria-label="Score progress">
-          <div class="score-top">
-            <div class="score-label"><i class="fa-solid fa-trophy"></i>Accumulated XP</div>
-            <div class="score-number" id="scoreDisplay">0</div>
-          </div>
-          <div class="progress-track" aria-hidden="true">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-          <div class="score-foot">
-            <span id="rankText">Research Fellow · Level I</span>
-            <button class="control-button" id="syncButton" type="button"><i class="fa-solid fa-rotate"></i>Sync</button>
-          </div>
-        </section>
-      </aside>
-
-      <section class="atlas-main" aria-labelledby="systemsTitle">
-        <div class="topbar">
-          <div class="section-title">
-            <h2 id="systemsTitle"><i class="fa-solid fa-cubes-stacked"></i>Physiology Systems</h2>
-            <p>Explore core body systems, track completed modules, and keep your lab score synced across sessions.</p>
-          </div>
-
-          <div class="tools">
-            <label class="search-wrap">
-              <span class="sr-only">Search systems</span>
-              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-              <input id="searchInput" type="search" placeholder="Search systems" autocomplete="off">
-            </label>
-            <div class="filters" role="group" aria-label="Filter systems">
-              <button class="filter-button is-active" type="button" data-filter="all">All</button>
-              <button class="filter-button" type="button" data-filter="ready">Ready</button>
-              <button class="filter-button" type="button" data-filter="soon">Soon</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="result-status" id="resultStatus" aria-live="polite">6 systems shown</div>
-
-        <div class="system-grid" id="systemGrid">
-          <article class="expert-card is-active" data-system="heart" data-status="ready" data-accent="coral" data-search="heart cardiovascular dynamics blood flow electrical conduction hemodynamics ecg">
-            <div class="card-top">
-              <div class="card-icon" aria-hidden="true"><i class="fa-solid fa-heart-pulse"></i></div>
-              <span class="status-badge ready"><i class="fa-solid fa-bolt"></i>Ready</span>
-            </div>
-            <div class="card-copy">
-              <h3>Heart</h3>
-              <p>Cardiovascular dynamics, blood flow, valve timing, and electrical conduction.</p>
-            </div>
-            <div class="tag-list" aria-label="Heart topics">
-              <span>hemodynamics</span>
-              <span>ECG</span>
-              <span>flow</span>
-            </div>
-            <div class="card-actions">
-              <button class="select-card" type="button" data-system="heart">Inspect</button>
-              <span class="xp-chip">+20</span>
-            </div>
-          </article>
-
-          <article class="expert-card" data-system="brain" data-status="ready" data-accent="blue" data-search="brain neural networks cognition sensory integration connectome memory neurons">
-            <div class="card-top">
-              <div class="card-icon" aria-hidden="true"><i class="fa-solid fa-brain"></i></div>
-              <span class="status-badge ready"><i class="fa-solid fa-bolt"></i>Ready</span>
-            </div>
-            <div class="card-copy">
-              <h3>Brain</h3>
-              <p>Neural networks, cognition, sensory integration, memory, and regulation.</p>
-            </div>
-            <div class="tag-list" aria-label="Brain topics">
-              <span>connectome</span>
-              <span>cortex</span>
-              <span>signals</span>
-            </div>
-            <div class="card-actions">
-              <button class="select-card" type="button" data-system="brain">Inspect</button>
-              <span class="xp-chip">+20</span>
-            </div>
-          </article>
-
-          <article class="expert-card" data-system="lungs" data-status="ready" data-accent="teal" data-search="lungs respiration pulmonary ventilation gas exchange oxygen carbon dioxide alveoli">
-            <div class="card-top">
-              <div class="card-icon" aria-hidden="true"><i class="fa-solid fa-lungs"></i></div>
-              <span class="status-badge ready"><i class="fa-solid fa-bolt"></i>Ready</span>
-            </div>
-            <div class="card-copy">
-              <h3>Lungs</h3>
-              <p>Gas exchange, pulmonary ventilation, alveoli, and O2/CO2 balance.</p>
-            </div>
-            <div class="tag-list" aria-label="Lung topics">
-              <span>respirometry</span>
-              <span>alveoli</span>
-              <span>O2/CO2</span>
-            </div>
-            <div class="card-actions">
-              <button class="select-card" type="button" data-system="lungs">Inspect</button>
-              <span class="xp-chip">+20</span>
-            </div>
-          </article>
-
-          <article class="expert-card" data-system="skeleton" data-status="soon" data-accent="amber" data-search="skeleton bones skeletal biomechanics joints marrow minerals support">
-            <div class="card-top">
-              <div class="card-icon" aria-hidden="true"><i class="fa-solid fa-bone"></i></div>
-              <span class="status-badge soon"><i class="fa-solid fa-clock"></i>Soon</span>
-            </div>
-            <div class="card-copy">
-              <h3>Skeleton</h3>
-              <p>Structural framework, joints, marrow, mineral storage, and load transfer.</p>
-            </div>
-            <div class="tag-list" aria-label="Skeleton topics">
-              <span>206 bones</span>
-              <span>joints</span>
-              <span>support</span>
-            </div>
-            <div class="card-actions">
-              <button class="select-card" type="button" data-system="skeleton">Preview</button>
-              <span class="xp-chip">+15</span>
-            </div>
-          </article>
-
-          <article class="expert-card" data-system="muscles" data-status="soon" data-accent="coral" data-search="muscles myology skeletal smooth cardiac movement thermogenesis contraction">
-            <div class="card-top">
-              <div class="card-icon" aria-hidden="true"><i class="fa-solid fa-dumbbell"></i></div>
-              <span class="status-badge soon"><i class="fa-solid fa-clock"></i>Soon</span>
-            </div>
-            <div class="card-copy">
-              <h3>Muscles</h3>
-              <p>Skeletal, smooth, and cardiac muscle mechanics, movement, and heat output.</p>
-            </div>
-            <div class="tag-list" aria-label="Muscle topics">
-              <span>myology</span>
-              <span>contraction</span>
-              <span>ATP</span>
-            </div>
-            <div class="card-actions">
-              <button class="select-card" type="button" data-system="muscles">Preview</button>
-              <span class="xp-chip">+15</span>
-            </div>
-          </article>
-
-          <article class="expert-card" data-system="digestive" data-status="soon" data-accent="green" data-search="digestive metabolism gi tract absorption microbiome nutrients enzymes">
-            <div class="card-top">
-              <div class="card-icon" aria-hidden="true"><i class="fa-solid fa-apple-whole"></i></div>
-              <span class="status-badge soon"><i class="fa-solid fa-clock"></i>Soon</span>
-            </div>
-            <div class="card-copy">
-              <h3>Digestive</h3>
-              <p>GI tract movement, nutrient absorption, enzyme activity, and microbiome interface.</p>
-            </div>
-            <div class="tag-list" aria-label="Digestive topics">
-              <span>metabolism</span>
-              <span>enzymes</span>
-              <span>microbiome</span>
-            </div>
-            <div class="card-actions">
-              <button class="select-card" type="button" data-system="digestive">Preview</button>
-              <span class="xp-chip">+15</span>
-            </div>
-          </article>
-        </div>
-
-        <div class="empty-state" id="emptyState">
-          <div>
-            <strong>No systems found</strong>
-            <p>Try a different body system, function, or topic.</p>
-          </div>
-        </div>
-      </section>
-    </main>
+    <!-- Systems Grid (loaded dynamically) -->
+    <div id="systems-container" class="systems-grid">
+      <div class="loading"><i class="fas fa-circle-notch fa-spin"></i> Loading Atlas...</div>
+    </div>
   </div>
 
   <script>
-    (() => {
-      "use strict";
-
-      const STORAGE_KEYS = {
-        score: "labScore",
-        oldScore: "score",
-        completed: "labCompletedSystems",
-        active: "labActiveSystem"
-      };
-
-      const SYSTEMS = {
-        heart: {
-          name: "Heart",
-          area: "Cardiovascular System",
-          status: "ready",
-          href: "heart.html",
-          xp: 20,
-          metric: "~100k beats/day",
-          summary: "Cardiovascular dynamics, blood flow, valve timing, and electrical conduction."
-        },
-        brain: {
-          name: "Brain",
-          area: "Nervous System",
-          status: "ready",
-          href: "brain.html",
-          xp: 20,
-          metric: "~86B neurons",
-          summary: "Neural networks, cognition, sensory integration, memory, and regulation."
-        },
-        lungs: {
-          name: "Lungs",
-          area: "Respiratory System",
-          status: "ready",
-          href: "lungs.html",
-          xp: 20,
-          metric: "~500M alveoli",
-          summary: "Gas exchange, pulmonary ventilation, alveoli, and O2/CO2 balance."
-        },
-        skeleton: {
-          name: "Skeleton",
-          area: "Skeletal System",
-          status: "soon",
-          href: "",
-          xp: 15,
-          metric: "206 adult bones",
-          summary: "Structural framework, joints, marrow, mineral storage, and load transfer."
-        },
-        muscles: {
-          name: "Muscles",
-          area: "Muscular System",
-          status: "soon",
-          href: "",
-          xp: 15,
-          metric: "600+ muscles",
-          summary: "Skeletal, smooth, and cardiac muscle mechanics, movement, and heat output."
-        },
-        digestive: {
-          name: "Digestive",
-          area: "Digestive System",
-          status: "soon",
-          href: "",
-          xp: 15,
-          metric: "~9m GI tract",
-          summary: "GI tract movement, nutrient absorption, enzyme activity, and microbiome interface."
-        }
-      };
-
-      const scoreDisplay = document.getElementById("scoreDisplay");
-      const progressFill = document.getElementById("progressFill");
-      const masteryLevel = document.getElementById("masteryLevel");
-      const rankText = document.getElementById("rankText");
-      const systemCount = document.getElementById("systemCount");
-      const readyCount = document.getElementById("readyCount");
-      const detailKicker = document.getElementById("detailKicker");
-      const detailName = document.getElementById("detailName");
-      const detailSummary = document.getElementById("detailSummary");
-      const detailMetric = document.getElementById("detailMetric");
-      const detailXp = document.getElementById("detailXp");
-      const focusStatus = document.getElementById("focusStatus");
-      const moduleLink = document.getElementById("moduleLink");
-      const completeButton = document.getElementById("completeButton");
-      const syncButton = document.getElementById("syncButton");
-      const bodyFigure = document.getElementById("bodyFigure");
-      const searchInput = document.getElementById("searchInput");
-      const resultStatus = document.getElementById("resultStatus");
-      const emptyState = document.getElementById("emptyState");
-      const cards = [...document.querySelectorAll(".expert-card")];
-      const hotspots = [...document.querySelectorAll(".hotspot")];
-      const filterButtons = [...document.querySelectorAll(".filter-button")];
-
-      let activeSystem = localStorage.getItem(STORAGE_KEYS.active) || "heart";
-      let activeFilter = "all";
-      let currentScore = getStoredScore();
-      let completedSystems = getCompletedSystems();
-
-      function getStoredScore() {
-        const migrated = localStorage.getItem(STORAGE_KEYS.oldScore);
-        if (migrated !== null && localStorage.getItem(STORAGE_KEYS.score) === null) {
-          localStorage.setItem(STORAGE_KEYS.score, migrated);
-          localStorage.removeItem(STORAGE_KEYS.oldScore);
-        }
-
-        const stored = Number.parseInt(localStorage.getItem(STORAGE_KEYS.score), 10);
-        if (Number.isFinite(stored)) return stored;
-
-        localStorage.setItem(STORAGE_KEYS.score, "12");
-        return 12;
-      }
-
-      function getCompletedSystems() {
-        try {
-          const raw = JSON.parse(localStorage.getItem(STORAGE_KEYS.completed) || "[]");
-          return Array.isArray(raw) ? new Set(raw.filter((id) => SYSTEMS[id])) : new Set();
-        } catch {
-          return new Set();
-        }
-      }
-
-      function persistCompletedSystems() {
-        localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify([...completedSystems]));
-      }
-
-      function getRank(score) {
-        if (score >= 120) return { level: "V", label: "Principal Fellow · Level V", pct: 100 };
-        if (score >= 80) return { level: "IV", label: "Senior Fellow · Level IV", pct: Math.min(100, (score / 120) * 100) };
-        if (score >= 50) return { level: "III", label: "Research Fellow · Level III", pct: Math.min(100, (score / 80) * 100) };
-        if (score >= 20) return { level: "II", label: "Research Fellow · Level II", pct: Math.min(100, (score / 50) * 100) };
-        return { level: "I", label: "Research Fellow · Level I", pct: Math.min(100, (score / 20) * 100) };
-      }
-
-      function updateStats() {
-        const systemValues = Object.values(SYSTEMS);
-        const rank = getRank(currentScore);
-
-        scoreDisplay.textContent = currentScore;
-        masteryLevel.textContent = rank.level;
-        rankText.textContent = rank.label;
-        progressFill.style.width = `${rank.pct}%`;
-        systemCount.textContent = systemValues.length;
-        readyCount.textContent = systemValues.filter((system) => system.status === "ready").length;
-
-        cards.forEach((card) => {
-          const systemId = card.dataset.system;
-          const badge = card.querySelector(".status-badge");
-          if (!badge) return;
-
-          if (completedSystems.has(systemId)) {
-            badge.className = "status-badge done";
-            badge.innerHTML = '<i class="fa-solid fa-check"></i>Done';
-          } else if (SYSTEMS[systemId].status === "ready") {
-            badge.className = "status-badge ready";
-            badge.innerHTML = '<i class="fa-solid fa-bolt"></i>Ready';
-          } else {
-            badge.className = "status-badge soon";
-            badge.innerHTML = '<i class="fa-solid fa-clock"></i>Soon';
-          }
-        });
-      }
-
-      function setActiveSystem(systemId) {
-        const system = SYSTEMS[systemId] || SYSTEMS.heart;
-        activeSystem = systemId;
-        localStorage.setItem(STORAGE_KEYS.active, activeSystem);
-
-        detailKicker.textContent = system.area;
-        detailName.textContent = system.name;
-        detailSummary.textContent = system.summary;
-        detailMetric.textContent = system.metric;
-        detailXp.textContent = `+${system.xp} XP`;
-        focusStatus.innerHTML = `<i class="fa-solid fa-circle-dot"></i> ${system.name}`;
-        bodyFigure.dataset.active = systemId;
-
-        if (system.status === "ready") {
-          moduleLink.href = system.href;
-          moduleLink.removeAttribute("aria-disabled");
-          moduleLink.classList.add("primary");
-          moduleLink.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i>Open Module';
-          completeButton.disabled = false;
-        } else {
-          moduleLink.href = "#";
-          moduleLink.setAttribute("aria-disabled", "true");
-          moduleLink.classList.remove("primary");
-          moduleLink.innerHTML = '<i class="fa-solid fa-lock"></i>Preview Only';
-          completeButton.disabled = true;
-        }
-
-        if (completedSystems.has(systemId)) {
-          completeButton.innerHTML = '<i class="fa-solid fa-circle-check"></i>Completed';
-        } else {
-          completeButton.innerHTML = '<i class="fa-solid fa-check"></i>Complete';
-        }
-
-        cards.forEach((card) => card.classList.toggle("is-active", card.dataset.system === systemId));
-        hotspots.forEach((hotspot) => hotspot.classList.toggle("is-active", hotspot.dataset.system === systemId));
-      }
-
-      function completeActiveSystem() {
-        const system = SYSTEMS[activeSystem];
-        if (!system || system.status !== "ready" || completedSystems.has(activeSystem)) return;
-
-        completedSystems.add(activeSystem);
-        currentScore += system.xp;
-        localStorage.setItem(STORAGE_KEYS.score, String(currentScore));
-        persistCompletedSystems();
-        updateStats();
-        setActiveSystem(activeSystem);
-      }
-
-      function syncScore() {
-        currentScore = getStoredScore();
-        completedSystems = getCompletedSystems();
-        updateStats();
-        setActiveSystem(activeSystem);
-        syncButton.innerHTML = '<i class="fa-solid fa-check"></i>Synced';
-        window.setTimeout(() => {
-          syncButton.innerHTML = '<i class="fa-solid fa-rotate"></i>Sync';
-        }, 850);
-      }
-
-      function filterSystems() {
-        const query = searchInput.value.trim().toLowerCase();
-        let visibleCount = 0;
-
-        cards.forEach((card) => {
-          const matchesFilter = activeFilter === "all" || card.dataset.status === activeFilter;
-          const matchesQuery = !query || card.dataset.search.includes(query) || card.dataset.system.includes(query);
-          const visible = matchesFilter && matchesQuery;
-          card.classList.toggle("is-hidden", !visible);
-          if (visible) visibleCount += 1;
-        });
-
-        resultStatus.textContent = `${visibleCount} ${visibleCount === 1 ? "system" : "systems"} shown`;
-        emptyState.classList.toggle("is-visible", visibleCount === 0);
-      }
-
-      cards.forEach((card) => {
-        card.addEventListener("mousemove", (event) => {
-          const rect = card.getBoundingClientRect();
-          const x = ((event.clientX - rect.left) / rect.width) * 100;
-          const y = ((event.clientY - rect.top) / rect.height) * 100;
-          card.style.setProperty("--mouse-x", `${x}%`);
-          card.style.setProperty("--mouse-y", `${y}%`);
-        });
-
-        card.addEventListener("mouseleave", () => {
-          card.style.setProperty("--mouse-x", "50%");
-          card.style.setProperty("--mouse-y", "50%");
-        });
-      });
-
-      document.querySelectorAll(".select-card").forEach((button) => {
-        button.addEventListener("click", () => setActiveSystem(button.dataset.system));
-      });
-
-      hotspots.forEach((hotspot) => {
-        hotspot.addEventListener("click", () => setActiveSystem(hotspot.dataset.system));
-      });
-
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          activeFilter = button.dataset.filter;
-          filterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-          filterSystems();
-        });
-      });
-
-      searchInput.addEventListener("input", filterSystems);
-      completeButton.addEventListener("click", completeActiveSystem);
-      syncButton.addEventListener("click", syncScore);
-      moduleLink.addEventListener("click", (event) => {
-        if (moduleLink.getAttribute("aria-disabled") === "true") event.preventDefault();
-      });
-
-      window.addEventListener("storage", (event) => {
-        if ([STORAGE_KEYS.score, STORAGE_KEYS.completed].includes(event.key)) syncScore();
-      });
-
-      updateStats();
-      setActiveSystem(activeSystem);
-      filterSystems();
-
-      const canvas = document.getElementById("particles");
-      const ctx = canvas.getContext("2d");
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const particleCount = reducedMotion ? 32 : 96;
-      const particles = [];
-      let width = 0;
-      let height = 0;
-      let dpr = 1;
-
+    (function() {
+      // Neural Background Animation
+      const canvas = document.getElementById('neural-bg');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+      
       function resizeCanvas() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
         width = window.innerWidth;
         height = window.innerHeight;
-        canvas.width = Math.floor(width * dpr);
-        canvas.height = Math.floor(height * dpr);
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        canvas.width = width;
+        canvas.height = height;
       }
-
-      function makeParticles() {
-        particles.length = 0;
-        for (let i = 0; i < particleCount; i += 1) {
+      
+      function initParticles(count = 80) {
+        particles = [];
+        for (let i = 0; i < count; i++) {
           particles.push({
             x: Math.random() * width,
             y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.34,
-            vy: (Math.random() - 0.5) * 0.34,
-            radius: Math.random() * 1.9 + 0.8
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            size: Math.random() * 2 + 1
           });
         }
       }
-
+      
       function drawParticles() {
         ctx.clearRect(0, 0, width, height);
-
-        for (let i = 0; i < particles.length; i += 1) {
-          const first = particles[i];
-          for (let j = i + 1; j < particles.length; j += 1) {
-            const second = particles[j];
-            const dx = first.x - second.x;
-            const dy = first.y - second.y;
-            const distance = Math.hypot(dx, dy);
-
-            if (distance < 130) {
+        ctx.fillStyle = '#00f0ff';
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 8;
+        
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+          
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        
+        // Draw connections
+        ctx.shadowBlur = 4;
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.08)';
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 100) {
               ctx.beginPath();
-              ctx.moveTo(first.x, first.y);
-              ctx.lineTo(second.x, second.y);
-              ctx.strokeStyle = `rgba(125, 231, 215, ${0.14 * (1 - distance / 130)})`;
-              ctx.lineWidth = 0.7;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
               ctx.stroke();
             }
           }
         }
-
-        particles.forEach((particle) => {
-          const gradient = ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, particle.radius * 4);
-          gradient.addColorStop(0, "rgba(243, 246, 251, 0.95)");
-          gradient.addColorStop(0.45, "rgba(125, 231, 215, 0.55)");
-          gradient.addColorStop(1, "rgba(125, 231, 215, 0)");
-
-          ctx.beginPath();
-          ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-          ctx.fillStyle = gradient;
-          ctx.fill();
-
-          if (!reducedMotion) {
-            particle.x += particle.vx;
-            particle.y += particle.vy;
-            if (particle.x < -10) particle.x = width + 10;
-            if (particle.x > width + 10) particle.x = -10;
-            if (particle.y < -10) particle.y = height + 10;
-            if (particle.y > height + 10) particle.y = -10;
-          }
-        });
-
-        if (!reducedMotion) requestAnimationFrame(drawParticles);
+        requestAnimationFrame(drawParticles);
       }
-
-      if (ctx) {
+      
+      window.addEventListener('resize', () => {
         resizeCanvas();
-        makeParticles();
-        drawParticles();
-        window.addEventListener("resize", () => {
-          resizeCanvas();
-          makeParticles();
-        });
+        initParticles();
+      });
+      
+      resizeCanvas();
+      initParticles();
+      drawParticles();
+
+      // Data loading and rendering
+      const container = document.getElementById('systems-container');
+      const searchInput = document.getElementById('search-input');
+      let systemsData = [];
+      
+      async function loadData() {
+        try {
+          const response = await fetch('data.json');
+          systemsData = await response.json();
+          renderSystems(systemsData);
+          updateStats(systemsData);
+        } catch (error) {
+          console.error('Error loading data:', error);
+          container.innerHTML = '<p style="color:red;">Failed to load atlas data. Ensure data.json exists.</p>';
+        }
       }
+      
+      function updateStats(data) {
+        document.getElementById('total-systems').textContent = data.length;
+        const totalOrgans = data.reduce((sum, sys) => sum + (sys.organs ? sys.organs.length : 0), 0);
+        document.getElementById('total-organs').textContent = totalOrgans;
+        const xp = localStorage.getItem('labScore') || 0;
+        document.getElementById('xp-score').textContent = xp;
+      }
+      
+      function renderSystems(systems) {
+        if (!systems.length) {
+          container.innerHTML = '<p>No systems found.</p>';
+          return;
+        }
+        
+        let html = '';
+        systems.forEach(system => {
+          const organs = system.organs || [];
+          const organTags = organs.slice(0, 4).map(o => `<span class="organ-tag">${o.name}</span>`).join('');
+          const moreCount = organs.length > 4 ? ` +${organs.length - 4}` : '';
+          
+          html += `
+            <div class="system-card" data-system-id="${system.id}" onclick="window.location.href='${system.pageUrl}'">
+              <div class="card-header">
+                <div class="card-icon"><i class="fas ${system.icon}"></i></div>
+                <div>
+                  <div class="card-title">${system.name}</div>
+                  <div class="card-subtitle">${system.organs ? system.organs.length : 0} major components</div>
+                </div>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 15px;">${system.shortDesc}</p>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${system.completion || 0}%"></div>
+              </div>
+              <div class="organ-preview">
+                ${organTags} ${moreCount ? `<span class="organ-tag">${moreCount}</span>` : ''}
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <span style="color: var(--primary-cyan);"><i class="fas fa-microchip"></i> ${system.status}</span>
+                <span style="color: var(--accent-purple);">+${system.xp} XP <i class="fas fa-arrow-right"></i></span>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+      
+      // Search functionality
+      searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = systemsData.filter(sys => 
+          sys.name.toLowerCase().includes(term) ||
+          (sys.organs && sys.organs.some(o => o.name.toLowerCase().includes(term)))
+        );
+        renderSystems(filtered);
+      });
+      
+      // Load XP from localStorage
+      function initXP() {
+        if (!localStorage.getItem('labScore')) {
+          localStorage.setItem('labScore', '0');
+        }
+        document.getElementById('xp-score').textContent = localStorage.getItem('labScore');
+      }
+      
+      initXP();
+      loadData();
     })();
   </script>
 </body>
