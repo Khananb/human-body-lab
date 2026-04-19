@@ -59,6 +59,7 @@
       padding: 20px; 
       position: relative;
       z-index: 1;
+      scroll-behavior: smooth;
     }
     
     .glass-panel {
@@ -178,7 +179,6 @@
       border-radius: 40px; 
       cursor: pointer; 
       transition: all 0.2s;
-      border: none;
     }
     
     .btn:hover { 
@@ -191,6 +191,7 @@
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+      pointer-events: none;
     }
     
     .anatomy-list {
@@ -297,7 +298,7 @@
   <canvas id="neural-bg"></canvas>
   
   <div class="container">
-    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Neural Atlas</a>
+    <a href="index.html" class="back-link" aria-label="Back to Neural Atlas"><i class="fas fa-arrow-left"></i> Back to Neural Atlas</a>
     
     <div class="glass-panel">
       <h1>HEART</h1>
@@ -311,16 +312,16 @@
       </div>
       
       <div class="tabs">
-        <button class="tab-btn active" data-tab="overview">Overview</button>
-        <button class="tab-btn" data-tab="anatomy">Anatomy</button>
-        <button class="tab-btn" data-tab="physiology">Physiology</button>
-        <button class="tab-btn" data-tab="3d">3D Model</button>
-        <button class="tab-btn" data-tab="quiz">Quiz</button>
+        <button class="tab-btn active" data-tab="overview" aria-label="Overview Tab">Overview</button>
+        <button class="tab-btn" data-tab="anatomy" aria-label="Anatomy Tab">Anatomy</button>
+        <button class="tab-btn" data-tab="physiology" aria-label="Physiology Tab">Physiology</button>
+        <button class="tab-btn" data-tab="3d" aria-label="3D Model Tab">3D Model</button>
+        <button class="tab-btn" data-tab="quiz" aria-label="Quiz Tab">Quiz</button>
       </div>
       
       <!-- Overview Tab -->
       <div id="overview" class="tab-content active">
-        <p style="margin-bottom: 20px;">The heart is a muscular organ about the size of a fist, located just behind and slightly left of the breastbone. It pumps blood through the blood vessels of the circulatory system, providing the body with oxygen and nutrients while removing metabolic wastes.</p>
+        <p style="margin-bottom: 20px;">The heart is a muscular organ about the size of a fist, located just behind and slightly left of the breastbone. It pumps blood through the blood vessels of the circulatory system, delivering oxygen and nutrients to all parts of the body while removing carbon dioxide and other metabolic wastes. This process occurs continuously throughout life, with the heart beating approximately 100,000 times per day.</p>
         <div class="function-card">
           <h3><i class="fas fa-heartbeat" style="color: var(--primary-cyan);"></i> Primary Functions</h3>
           <ul style="margin-left: 20px; margin-top: 10px;">
@@ -355,17 +356,17 @@
       <div id="physiology" class="tab-content">
         <div class="function-card">
           <h3><i class="fas fa-bolt"></i> Cardiac Conduction System</h3>
-          <p>The heartbeat is initiated by the sinoatrial (SA) node, the natural pacemaker. The electrical impulse travels through the atria, then to the atrioventricular (AV) node, Bundle of His, and Purkinje fibers, causing coordinated contraction.</p>
+          <p>The heartbeat is initiated by the sinoatrial (SA) node, the natural pacemaker. The electrical impulse travels through the atria, then to the atrioventricular (AV) node, Bundle of His, and finally through the Purkinje fibers to the ventricles. This coordinated electrical activity ensures that the atria contract first to fill the ventricles, followed by ventricular contraction to pump blood throughout the body.</p>
         </div>
         <div class="function-card">
           <h3><i class="fas fa-tachometer-alt"></i> Cardiac Cycle</h3>
-          <p><strong>Systole:</strong> Contraction phase, blood is ejected.<br>
-          <strong>Diastole:</strong> Relaxation phase, chambers fill with blood.</p>
-          <p>Cardiac Output (CO) = Heart Rate (HR) × Stroke Volume (SV). Normal resting CO is about 5 L/min.</p>
+          <p><strong>Systole:</strong> Contraction phase, blood is ejected from the ventricles into the aorta and pulmonary artery.<br>
+          <strong>Diastole:</strong> Relaxation phase, chambers fill with blood from the atria and veins.</p>
+          <p>Cardiac Output (CO) = Heart Rate (HR) × Stroke Volume (SV). Normal resting CO is about 5 L/min, meaning the heart pumps approximately 5 liters of blood every minute at rest.</p>
         </div>
         <div class="function-card">
           <h3><i class="fas fa-exclamation-triangle"></i> Common Disorders</h3>
-          <p>Coronary Artery Disease, Arrhythmias, Heart Failure, Valvular Disease, Myocardial Infarction.</p>
+          <p>Coronary Artery Disease, Arrhythmias, Heart Failure, Valvular Disease, Myocardial Infarction (heart attack), Hypertension, and Congenital Heart Defects are among the most common cardiovascular conditions affecting millions worldwide.</p>
         </div>
       </div>
       
@@ -378,11 +379,10 @@
           </div>
         </div>
         <div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
-          <button class="btn" onclick="markComplete()"><i class="fas fa-check-circle"></i> Mark as Completed (+20 XP)</button>
+          <button class="btn" onclick="markComplete()" aria-label="Mark module as complete and earn XP"><i class="fas fa-check-circle"></i> Mark as Completed (+20 XP)</button>
         </div>
-        <p style="margin-top: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">
-          <i class="fas fa-mouse"></i> Drag to rotate · Scroll to zoom
-        </p>
+        <p style="margin-top: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;
+        "><i class="fas fa-mouse"></i> Drag to rotate · Scroll to zoom</p>
       </div>
       
       <!-- Quiz Tab -->
@@ -397,19 +397,19 @@
           
           <div id="quiz-question" style="font-size: 1.3rem; font-weight: 500; margin-bottom: 24px;"></div>
           
-          <div id="quiz-options" style="display: flex; flex-direction: column; gap: 12px;"></div>
+          <div id="quiz-options" style="display: flex; flex-direction: column; gap: 12px;" role="group" aria-label="Quiz options"></div>
           
           <div id="quiz-feedback" style="margin-top: 20px; min-height: 40px;"></div>
           
           <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-            <button id="prev-btn" class="btn" style="opacity: 0.7;" disabled><i class="fas fa-arrow-left"></i> Previous</button>
-            <button id="next-btn" class="btn">Next <i class="fas fa-arrow-right"></i></button>
+            <button id="prev-btn" class="btn" disabled aria-label="Go to previous question"><i class="fas fa-arrow-left"></i> Previous</button>
+            <button id="next-btn" class="btn" aria-label="Go to next question">Next <i class="fas fa-arrow-right"></i></button>
           </div>
           
           <div id="quiz-result" style="display: none; text-align: center; margin-top: 30px;">
             <h2>Quiz Complete!</h2>
             <p style="font-size: 1.2rem;">Your Score: <span id="final-score" style="color: var(--primary-cyan); font-weight: 700;"></span></p>
-            <button class="btn" onclick="restartQuiz()" style="margin-top: 20px;">Restart Quiz</button>
+            <button class="btn" onclick="restartQuiz()" aria-label="Restart the quiz"><i class="fas fa-redo"></i> Restart Quiz</button>
           </div>
         </div>
       </div>
@@ -431,7 +431,7 @@
         canvas.height = height;
       }
       
-      function initParticles(count = 60) {
+      function initParticles(count = 35) {
         particles = [];
         for (let i = 0; i < count; i++) {
           particles.push({
@@ -500,6 +500,11 @@
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.tab).classList.add('active');
+        
+        // Smooth scroll to tab content
+        setTimeout(() => {
+          document.querySelector('.glass-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
       });
     });
     
@@ -541,6 +546,26 @@
     const progressFill = document.getElementById('progress-bar-fill');
     const resultDiv = document.getElementById('quiz-result');
 
+    // Load quiz state from localStorage
+    function loadQuizState() {
+      const saved = localStorage.getItem('quizState_heart');
+      if (saved) {
+        const state = JSON.parse(saved);
+        currentQuestionIndex = state.currentIndex;
+        userAnswers = state.answers;
+        quizSubmitted = state.submitted;
+      }
+    }
+
+    // Save quiz state to localStorage
+    function saveQuizState() {
+      localStorage.setItem('quizState_heart', JSON.stringify({
+        currentIndex,
+        answers: userAnswers,
+        submitted: quizSubmitted
+      }));
+    }
+
     function loadQuestion(index) {
       const q = quizQuestions[index];
       questionEl.textContent = q.question;
@@ -559,7 +584,7 @@
         }
         
         optionsHtml += `
-          <div class="${optionClass}" data-option-index="${i}">
+          <div class="${optionClass}" data-option-index="${i}" role="button" tabindex="0" aria-label="${opt}">
             <span class="option-letter">${String.fromCharCode(65 + i)}</span>
             <span>${opt}</span>
             ${isCorrect ? '<i class="fas fa-check-circle" style="color: #00ff88; margin-left: auto;"></i>' : ''}
@@ -574,8 +599,15 @@
           opt.addEventListener('click', () => {
             const selectedIndex = parseInt(opt.dataset.optionIndex);
             userAnswers[currentQuestionIndex] = selectedIndex;
+            saveQuizState();
             loadQuestion(currentQuestionIndex);
             updateButtons();
+          });
+          opt.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              opt.click();
+            }
           });
         });
       }
@@ -629,12 +661,16 @@
         xp += 30;
         localStorage.setItem('labScore', xp);
       }
+
+      // Clear quiz state when complete
+      localStorage.removeItem('quizState_heart');
     }
 
     window.restartQuiz = function() {
       currentQuestionIndex = 0;
       userAnswers = new Array(quizQuestions.length).fill(null);
       quizSubmitted = false;
+      localStorage.removeItem('quizState_heart');
       document.getElementById('quiz-progress').style.display = 'block';
       questionEl.style.display = 'block';
       optionsEl.style.display = 'flex';
@@ -649,6 +685,7 @@
     prevBtn.addEventListener('click', () => {
       if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
+        saveQuizState();
         loadQuestion(currentQuestionIndex);
         updateButtons();
       }
@@ -658,6 +695,7 @@
       if (!quizSubmitted) {
         if (currentQuestionIndex < quizQuestions.length - 1) {
           currentQuestionIndex++;
+          saveQuizState();
           loadQuestion(currentQuestionIndex);
           updateButtons();
         } else {
@@ -675,8 +713,9 @@
       }
     });
 
-    // Initialize quiz
-    loadQuestion(0);
+    // Initialize quiz with saved state
+    loadQuizState();
+    loadQuestion(currentQuestionIndex);
     updateButtons();
   </script>
 
@@ -687,6 +726,9 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
     const container = document.getElementById('model-container');
+    const MODEL_LOAD_TIMEOUT = 10000; // 10 seconds
+    let modelLoadTimeout;
+
     container.innerHTML = '';
 
     // 1. Scene, Camera, Renderer
@@ -728,8 +770,7 @@
     // 4. Load Model
     const loader = new GLTFLoader();
     const fileId = '12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H';
-    const googleDriveUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-    const modelPath = `https://api.allorigins.win/raw?url=${encodeURIComponent(googleDriveUrl)}`;
+    const modelPath = `https://drive.google.com/uc?export=download&id=${fileId}`;
     
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'loading-placeholder';
@@ -741,13 +782,26 @@
     loadingDiv.style.height = '100%';
     loadingDiv.style.display = 'flex';
     loadingDiv.style.background = '#0a0f1a';
+    loadingDiv.style.zIndex = '10';
     container.style.position = 'relative';
     container.appendChild(loadingDiv);
+
+    // Set timeout for model loading
+    modelLoadTimeout = setTimeout(() => {
+      if (loadingDiv && loadingDiv.parentElement) {
+        loadingDiv.innerHTML = `
+          <i class="fas fa-exclamation-triangle" style="color: #ff4d4d;"></i>
+          <p style="color: #ff4d4d;">3D model loading timed out.</p>
+          <p style="font-size: 0.9rem; margin-top: 8px;">Please try refreshing the page or check your connection.</p>
+        `;
+      }
+    }, MODEL_LOAD_TIMEOUT);
 
     loader.load(
       modelPath,
       (gltf) => {
-        if (loadingDiv) loadingDiv.remove();
+        clearTimeout(modelLoadTimeout);
+        if (loadingDiv && loadingDiv.parentElement) loadingDiv.remove();
         const model = gltf.scene;
         scene.add(model);
         
@@ -770,17 +824,18 @@
       },
       (xhr) => {
         const percent = Math.floor((xhr.loaded / xhr.total) * 100);
-        if (loadingDiv) {
+        if (loadingDiv && loadingDiv.parentElement) {
           loadingDiv.innerHTML = `<i class="fas fa-spinner fa-pulse"></i><p>Loading: ${percent}%</p>`;
         }
       },
       (error) => {
+        clearTimeout(modelLoadTimeout);
         console.error('Model load failed:', error);
-        if (loadingDiv) {
+        if (loadingDiv && loadingDiv.parentElement) {
           loadingDiv.innerHTML = `
             <i class="fas fa-exclamation-triangle" style="color: #ff4d4d;"></i>
             <p style="color: #ff4d4d;">3D model load failed.</p>
-            <p style="font-size: 0.9rem; margin-top: 8px;">Try refreshing or check console.</p>
+            <p style="font-size: 0.9rem; margin-top: 8px;">Try refreshing the page or check the browser console for details.</p>
           `;
         }
       }
