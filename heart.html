@@ -212,6 +212,7 @@
       background: #0a0f1a;
       border: 1px solid var(--glass-border);
       margin-top: 16px;
+      position: relative;
     }
     
     .loading-placeholder {
@@ -425,24 +426,20 @@
     }
   </script>
 
-  <!-- Three.js 3D Viewer (Module) -->
+  <!-- Three.js 3D Viewer (Module) with FIXED Model Path -->
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
     const container = document.getElementById('model-container');
-    
-    // Clear loading placeholder (will be replaced by canvas)
     container.innerHTML = '';
 
     // 1. Scene, Camera, Renderer
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0f1a); // Match theme
-
+    scene.background = new THREE.Color(0x0a0f1a);
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
     camera.position.set(3, 2, 5);
-
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -451,20 +448,15 @@
     // 2. Lighting
     const ambientLight = new THREE.AmbientLight(0x404060);
     scene.add(ambientLight);
-    
     const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
     dirLight1.position.set(2, 5, 3);
     scene.add(dirLight1);
-    
     const dirLight2 = new THREE.DirectionalLight(0xffaa88, 0.8);
     dirLight2.position.set(-3, 2, 1);
     scene.add(dirLight2);
-    
     const pointLight = new THREE.PointLight(0x00f0ff, 0.6);
     pointLight.position.set(1, 2, 2);
     scene.add(pointLight);
-    
-    // Fill light from below
     const fillLight = new THREE.PointLight(0x4466cc, 0.4);
     fillLight.position.set(-1, -1, 2);
     scene.add(fillLight);
@@ -481,10 +473,19 @@
 
     // 4. Load Model
     const loader = new GLTFLoader();
-    // 🔁 IMPORTANT: Change this path to your actual model location
-    const modelPath = 'https://corsproxy.io/?' + encodeURIComponent('https://drive.google.com/uc?export=download&id=12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H');
     
-    // Show a loading indicator while fetching
+    // 🔥🔥🔥 YEH LO - SAHI AUR FIXED MODEL PATH 🔥🔥🔥
+    // Google Drive File ID: 12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H
+    // AllOrigins Proxy use kar rahe hain (zyada reliable)
+    const fileId = '12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H';
+    const googleDriveUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+    const modelPath = `https://api.allorigins.win/raw?url=${encodeURIComponent(googleDriveUrl)}`;
+    
+    // Alternative proxies (agar upar wala fail ho toh comment change karke try kar):
+    // const modelPath = `https://corsproxy.io/?${encodeURIComponent(googleDriveUrl)}`;
+    // const modelPath = `https://cors-anywhere.herokuapp.com/${googleDriveUrl}`;
+    
+    // Loading indicator
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'loading-placeholder';
     loadingDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i><p>Loading 3D Model...</p>';
@@ -501,24 +502,20 @@
     loader.load(
       modelPath,
       (gltf) => {
-        // Remove loading indicator
         if (loadingDiv) loadingDiv.remove();
-        
         const model = gltf.scene;
         scene.add(model);
         
-        // Auto-scale and center
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 2.5 / maxDim; // Fit nicely in view
+        const scale = 2.5 / maxDim;
         model.scale.set(scale, scale, scale);
         
         const center = box.getCenter(new THREE.Vector3());
         model.position.sub(center);
-        model.position.y += 0.2; // Slight upward adjustment
+        model.position.y += 0.2;
         
-        // Optional: Add subtle glow effect to model (if materials exist)
         model.traverse((node) => {
           if (node.isMesh) {
             node.material.emissive = new THREE.Color(0x112233);
@@ -537,9 +534,9 @@
         if (loadingDiv) {
           loadingDiv.innerHTML = `
             <i class="fas fa-exclamation-triangle" style="color: #ff4d4d;"></i>
-            <p style="color: #ff4d4d;">3D model not found.</p>
-            <p style="font-size: 0.9rem; margin-top: 8px;">Will be available after 20GB hosting upgrade.</p>
-            <p style="font-size: 0.8rem; margin-top: 16px; color: #888;">Path: ${modelPath}</p>
+            <p style="color: #ff4d4d;">3D model load failed.</p>
+            <p style="font-size: 0.9rem; margin-top: 8px;">Possible reasons: CORS, file not public, or proxy down.</p>
+            <p style="font-size: 0.8rem; margin-top: 16px; color: #888;">Try alternative proxy in code comments.</p>
           `;
         }
       }
