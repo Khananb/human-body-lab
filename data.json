@@ -1,0 +1,176 @@
+[
+  {
+    "id": "cardiovascular",
+    "name": "Cardiovascular System",
+    "icon": "fa-heart-pulse",
+    "shortDesc": "The body's transport network, delivering oxygen, nutrients, and hormones while removing waste.",
+    "pageUrl": "heart.html",
+    "xp": 20,
+    "status": "Ready",
+    "completion": 70,
+    "organs": [
+      { "name": "Heart" },
+      { "name": "Arteries" },
+      { "name": "Veins" },
+      { "name": "Capillaries" }
+    ]
+  },
+  {
+    "id": "nervous",
+    "name": "Nervous System",
+    "icon": "fa-brain",
+    "shortDesc": "The body's command center, processing information and controlling actions and reactions.",
+    "pageUrl": "brain.html",
+    "xp": 20,
+    "status": "Ready",
+    "completion": 50,
+    "organs": [
+      { "name": "Brain" },
+      { "name": "Spinal Cord" },
+      { "name": "Nerves" },
+      { "name": "Sensory Organs" }
+    ]
+  },
+  {
+    "id": "respiratory",
+    "name": "Respiratory System",
+    "icon": "fa-lungs",
+    "shortDesc": "Facilitates gas exchange, bringing in oxygen and expelling carbon dioxide.",
+    "pageUrl": "lungs.html",
+    "xp": 20,
+    "status": "Soon",
+    "completion": 30,
+    "organs": [
+      { "name": "Lungs" },
+      { "name": "Trachea" },
+      { "name": "Bronchi" },
+      { "name": "Alveoli" }
+    ]
+  },
+  {
+    "id": "skeletal",
+    "name": "Skeletal System",
+    "icon": "fa-bone",
+    "shortDesc": "Provides structural support, protects organs, and enables movement.",
+    "pageUrl": "skeleton.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 20,
+    "organs": [
+      { "name": "Skull" },
+      { "name": "Ribcage" },
+      { "name": "Spine" },
+      { "name": "Limbs" }
+    ]
+  },
+  {
+    "id": "muscular",
+    "name": "Muscular System",
+    "icon": "fa-dumbbell",
+    "shortDesc": "Responsible for movement, posture, and heat production.",
+    "pageUrl": "muscles.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 15,
+    "organs": [
+      { "name": "Skeletal Muscles" },
+      { "name": "Smooth Muscles" },
+      { "name": "Cardiac Muscle" }
+    ]
+  },
+  {
+    "id": "digestive",
+    "name": "Digestive System",
+    "icon": "fa-stomach",
+    "shortDesc": "Breaks down food into nutrients for energy, growth, and repair.",
+    "pageUrl": "digestive.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 10,
+    "organs": [
+      { "name": "Stomach" },
+      { "name": "Intestines" },
+      { "name": "Liver" },
+      { "name": "Pancreas" }
+    ]
+  },
+  {
+    "id": "endocrine",
+    "name": "Endocrine System",
+    "icon": "fa-flask",
+    "shortDesc": "Regulates body functions through hormones secreted into the bloodstream.",
+    "pageUrl": "endocrine.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 5,
+    "organs": [
+      { "name": "Pituitary" },
+      { "name": "Thyroid" },
+      { "name": "Adrenal Glands" },
+      { "name": "Pancreas" }
+    ]
+  },
+  {
+    "id": "urinary",
+    "name": "Urinary System",
+    "icon": "fa-droplet",
+    "shortDesc": "Filters blood to remove wastes and maintain fluid/electrolyte balance.",
+    "pageUrl": "urinary.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 5,
+    "organs": [
+      { "name": "Kidneys" },
+      { "name": "Ureters" },
+      { "name": "Bladder" },
+      { "name": "Urethra" }
+    ]
+  },
+  {
+    "id": "lymphatic",
+    "name": "Lymphatic System",
+    "icon": "fa-shield-virus",
+    "shortDesc": "Defends against infection and maintains fluid balance.",
+    "pageUrl": "lymphatic.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 5,
+    "organs": [
+      { "name": "Lymph Nodes" },
+      { "name": "Spleen" },
+      { "name": "Thymus" },
+      { "name": "Tonsils" }
+    ]
+  },
+  {
+    "id": "integumentary",
+    "name": "Integumentary System",
+    "icon": "fa-hand",
+    "shortDesc": "Protects the body from damage, comprising skin, hair, nails, and glands.",
+    "pageUrl": "integumentary.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 5,
+    "organs": [
+      { "name": "Skin" },
+      { "name": "Hair" },
+      { "name": "Nails" },
+      { "name": "Sweat Glands" }
+    ]
+  },
+  {
+    "id": "reproductive",
+    "name": "Reproductive System",
+    "icon": "fa-venus-mars",
+    "shortDesc": "Responsible for producing offspring.",
+    "pageUrl": "reproductive.html",
+    "xp": 15,
+    "status": "Preview",
+    "completion": 0,
+    "organs": [
+      { "name": "Ovaries" },
+      { "name": "Testes" },
+      { "name": "Uterus" }
+    ]
+  }
+]
