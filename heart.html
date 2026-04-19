@@ -2,567 +2,657 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Heart · Human Body Lab</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    /* Additional styles for cartoon animations and tabs */
+    /* ---------- GLOBAL (same as index) ---------- */
+    :root {
+      color-scheme: dark;
+      --bg: #06080d;
+      --panel: rgba(13, 20, 30, 0.78);
+      --panel-strong: rgba(18, 27, 38, 0.92);
+      --line: rgba(190, 216, 255, 0.18);
+      --line-hot: rgba(125, 231, 215, 0.55);
+      --text: #f3f6fb;
+      --muted: #9eabbf;
+      --muted-strong: #c1cad8;
+      --blue: #86b7ff;
+      --teal: #7de7d7;
+      --coral: #ff8f78;
+      --amber: #ffd76a;
+      --green: #9be37d;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+      --radius: 8px;
+      --heart-glow: rgba(255, 107, 129, 0.45);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 16% 18%, rgba(255, 107, 129, 0.18), transparent 31rem),
+        radial-gradient(circle at 85% 4%, rgba(255, 143, 120, 0.12), transparent 30rem),
+        linear-gradient(145deg, #06080d 0%, #09111a 48%, #06080d 100%);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", system-ui, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, a { font: inherit; color: inherit; text-decoration: none; }
+
+    .neural-bg, #particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: -2;
+    }
+    .neural-bg {
+      background: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.4));
+    }
+    #particles { opacity: 0.65; }
+
+    .app-shell {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 22px 0 44px;
+    }
+
+    /* ---------- HEADER (same structure) ---------- */
+    .expert-header {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      align-items: center;
+      gap: 20px;
+      padding: 18px 0 24px;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brain-icon {
+      display: grid;
+      width: 52px; height: 52px;
+      place-items: center;
+      border: 1px solid rgba(255, 107, 129, 0.45);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255, 107, 129, 0.22), rgba(255, 143, 120, 0.12));
+      color: var(--coral);
+      font-size: 1.75rem;
+      box-shadow: 0 0 26px var(--heart-glow);
+    }
+    .logo-text h1 {
+      color: var(--text);
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.08;
+    }
+    .logo-text .badge {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .stats-module {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(116px, 1fr));
+      gap: 10px;
+      width: min(520px, 100%);
+    }
+    .stat-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      align-items: center;
+      gap: 10px;
+      min-height: 66px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(10, 16, 24, 0.74);
+      box-shadow: var(--shadow);
+    }
+    .stat-icon {
+      display: grid;
+      width: 36px; height: 36px;
+      place-items: center;
+      border: 1px solid rgba(255, 107, 129, 0.4);
+      border-radius: var(--radius);
+      background: rgba(255, 107, 129, 0.1);
+      color: var(--coral);
+    }
+    .stat-info .label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .stat-info .value {
+      color: var(--text);
+      font-size: 1.34rem;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    /* ---------- CARDS & PANELS (glass) ---------- */
+    .card, .expert-card, .tab-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px) saturate(140%);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    /* ---------- TABS (style like filter buttons) ---------- */
     .tab-container {
       display: flex;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       flex-wrap: wrap;
     }
-    
     .tab-btn {
-      background: rgba(20, 15, 35, 0.5);
-      border: 1px solid rgba(255, 140, 180, 0.3);
-      padding: 12px 24px;
-      border-radius: 40px;
-      color: #f5dae2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 20px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.055);
+      color: var(--muted-strong);
+      font-weight: 650;
       cursor: pointer;
-      transition: all 0.3s;
-      font-weight: 500;
+      transition: all 150ms ease;
       backdrop-filter: blur(8px);
     }
-    
+    .tab-btn i { color: var(--coral); }
     .tab-btn.active {
-      background: linear-gradient(135deg, #ff6b81, #ff4757);
-      border-color: #ff6b81;
+      border-color: rgba(255, 107, 129, 0.6);
+      background: rgba(255, 107, 129, 0.15);
       color: white;
-      box-shadow: 0 0 20px rgba(255, 107, 129, 0.3);
+      box-shadow: 0 0 16px var(--heart-glow);
     }
-    
     .tab-btn:hover {
-      background: rgba(80, 40, 70, 0.8);
-      border-color: #ff9eb0;
+      border-color: rgba(255, 107, 129, 0.5);
+      background: rgba(255, 107, 129, 0.08);
     }
-    
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.5s ease;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Cartoon Heart Animation */
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ---------- CARTOON HEART (restyled) ---------- */
     .cartoon-heart-container {
       display: flex;
       justify-content: center;
-      align-items: center;
       padding: 20px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 20px;
-      margin: 20px 0;
+      background: rgba(255, 107, 129, 0.05);
+      border-radius: var(--radius);
+      margin: 15px 0;
+      border: 1px dashed rgba(255, 107, 129, 0.2);
     }
-    
     .cartoon-heart {
       position: relative;
-      width: 200px;
-      height: 180px;
+      width: 200px; height: 180px;
       animation: heartbeat 1.5s ease-in-out infinite;
     }
-    
-    .heart-shape {
-      position: relative;
-      width: 100px;
-      height: 90px;
-      margin: 0 auto;
-    }
-    
     .heart-shape:before,
     .heart-shape:after {
-      position: absolute;
-      content: "";
-      left: 50px;
-      top: 0;
-      width: 50px;
-      height: 80px;
-      background: #ff4757;
-      border-radius: 50px 50px 0 0;
-      transform: rotate(-45deg);
-      transform-origin: 0 100%;
-      box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+      background: #ff5e7a;
+      box-shadow: 0 5px 20px rgba(255, 71, 87, 0.5);
     }
-    
-    .heart-shape:after {
-      left: 0;
-      transform: rotate(45deg);
-      transform-origin: 100% 100%;
+    .blood-vessel { background: #ff7b93; }
+    .blood-cell { background: #ff3b5c; }
+
+    /* ---------- FUN FACT GRID ---------- */
+    .fun-fact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
     }
-    
-    .blood-vessel {
-      position: absolute;
-      background: #ff6b81;
-      border-radius: 10px;
+    .fact-card {
+      background: rgba(255, 107, 129, 0.08);
+      border: 1px solid rgba(255, 107, 129, 0.25);
+      border-radius: var(--radius);
+      padding: 18px;
+      text-align: center;
+      transition: transform 0.2s, background 0.2s;
     }
-    
-    .vessel-1 {
-      width: 12px;
-      height: 40px;
-      top: -30px;
-      left: 44px;
-      animation: pulse 2s infinite;
+    .fact-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 107, 129, 0.15);
+      border-color: var(--line-hot);
     }
-    
-    .vessel-2 {
-      width: 15px;
-      height: 35px;
-      top: 10px;
-      right: -20px;
-      animation: pulse 2s infinite 0.5s;
+    .fact-emoji { font-size: 2.2rem; margin-bottom: 8px; }
+
+    /* ---------- INFO BOX, TABLE, LIST ---------- */
+    .info-box {
+      background: rgba(255, 107, 129, 0.08);
+      border-left: 4px solid var(--coral);
+      padding: 15px 18px;
+      border-radius: var(--radius);
+      margin: 20px 0;
     }
-    
-    .vessel-3 {
-      width: 10px;
-      height: 30px;
-      bottom: -20px;
-      left: 45px;
-      animation: pulse 2s infinite 1s;
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
     }
-    
-    .blood-cell {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: #ff3366;
-      border-radius: 50%;
-      animation: flowBlood 3s infinite;
+    .comparison-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    
-    .cell-1 { top: 20px; left: 10px; animation-delay: 0s; }
-    .cell-2 { top: 50px; left: 20px; animation-delay: 1s; }
-    .cell-3 { top: 30px; right: 15px; animation-delay: 2s; }
-    .cell-4 { bottom: 20px; left: 30px; animation-delay: 1.5s; }
-    
+    .disease-list {
+      list-style: none;
+    }
+    .disease-list li {
+      padding: 14px;
+      margin: 8px 0;
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,107,129,0.15);
+    }
+    .disease-list strong {
+      color: var(--coral);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* ---------- BUTTONS (same as index) ---------- */
+    .control-button, .pill-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 20px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.055);
+      color: var(--text);
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+    .control-button.primary, .pill-link.primary {
+      border-color: rgba(255, 107, 129, 0.55);
+      background: linear-gradient(135deg, rgba(255,107,129,0.22), rgba(255,143,120,0.12));
+    }
+    .control-button:hover, .pill-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,107,129,0.7);
+      background: rgba(255,107,129,0.15);
+    }
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 920px) {
+      .expert-header { grid-template-columns: 1fr; }
+      .stats-module { width: 100%; }
+    }
+    @media (max-width: 640px) {
+      .app-shell { width: min(100% - 24px, 1440px); }
+      .stats-module { grid-template-columns: 1fr; }
+      .tab-btn { flex: 1 0 calc(50% - 10px); }
+    }
+
+    /* animations */
     @keyframes heartbeat {
       0%, 100% { transform: scale(1); }
       30% { transform: scale(1.1); }
       60% { transform: scale(0.95); }
     }
-    
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scaleY(1); }
-      50% { opacity: 0.6; transform: scaleY(1.2); }
+      0%,100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.5; transform: scaleY(1.15); }
     }
-    
     @keyframes flowBlood {
-      0% { transform: translate(0, 0); opacity: 1; }
-      50% { transform: translate(30px, -20px); opacity: 0.5; }
-      100% { transform: translate(0, 0); opacity: 1; }
+      0% { transform: translate(0,0); opacity:1; }
+      50% { transform: translate(25px,-15px); opacity:0.5; }
+      100% { transform: translate(0,0); opacity:1; }
     }
-    
-    /* Fun fact cards */
-    .fun-fact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    
-    .fact-card {
-      background: rgba(255, 107, 129, 0.1);
-      border: 1px solid rgba(255, 107, 129, 0.3);
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-      transition: transform 0.3s;
-    }
-    
-    .fact-card:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 107, 129, 0.15);
-    }
-    
-    .fact-emoji {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-    
-    .fact-card p {
-      font-size: 0.9rem;
-      color: #ffd0d8;
-    }
-    
-    /* Info box */
-    .info-box {
-      background: linear-gradient(135deg, rgba(255, 107, 129, 0.1), rgba(255, 71, 87, 0.05));
-      border-left: 4px solid #ff6b81;
-      padding: 15px 20px;
-      border-radius: 12px;
-      margin: 20px 0;
-    }
-    
-    .info-box i {
-      color: #ff6b81;
-      margin-right: 10px;
-    }
-    
-    /* Disease cards */
-    .disease-list {
-      list-style: none;
-      padding: 0;
-    }
-    
-    .disease-list li {
-      padding: 12px;
-      margin: 8px 0;
-      background: rgba(20, 15, 35, 0.3);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 140, 180, 0.2);
-    }
-    
-    .disease-list strong {
-      color: #ff8da1;
-      display: block;
-      margin-bottom: 5px;
-    }
-    
-    /* Comparison table */
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 15px 0;
-    }
-    
-    .comparison-table td {
-      padding: 12px;
-      border: 1px solid rgba(255, 140, 180, 0.2);
-    }
-    
-    .comparison-table tr:first-child {
-      background: rgba(255, 107, 129, 0.2);
-      font-weight: bold;
-    }
+    .blood-vessel { animation: pulse 2s infinite; }
+    .blood-cell { animation: flowBlood 3.5s infinite; }
   </style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
-  <div class="neural-bg" style="background: radial-gradient(circle at 70% 30%, #2a1a2a, #03050b 95%);"></div>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="neural-bg" aria-hidden="true"></div>
 
-  <header class="expert-header" style="border-bottom-color: #ff6b81;">
-    <div class="logo-area">
-      <div class="system-icon"><i class="fas fa-heartbeat"></i></div>
-      <div class="logo-text">
-        <h1 style="background: linear-gradient(135deg, #ffe0e5, #ffb0bb); -webkit-background-clip: text; background-clip: text;">HEART ATLAS</h1>
-        <div class="badge" style="color: #ff99aa;">CARDIOVASCULAR SYSTEM · WIKIPEDIA DATA</div>
-      </div>
-    </div>
-    <div class="stats-module">
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fas fa-heart-pulse"></i></div>
-        <div class="stat-info">
-          <div class="label">AVG BPM</div>
-          <div class="value">72</div>
+  <div class="app-shell">
+    <!-- HEADER (similar to index, heart themed) -->
+    <header class="expert-header">
+      <div class="logo-area">
+        <div class="brain-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="logo-text">
+          <h1>Heart Atlas</h1>
+          <div class="badge">Cardiovascular System · Expert Module</div>
         </div>
       </div>
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fas fa-star"></i></div>
-        <div class="stat-info">
-          <div class="label">XP</div>
-          <div class="value" id="xpDisplay">0</div>
-        </div>
-      </div>
-    </div>
-  </header>
 
-  <main class="container">
-    <!-- Cartoon Heart Animation -->
-    <div class="expert-card">
-      <div class="card-header">
-        <i class="fas fa-heart" style="color: #ff6b81;"></i>
-        <h3>Animated Heart ❤️</h3>
-      </div>
-      <div class="cartoon-heart-container">
-        <div class="cartoon-heart">
-          <div class="heart-shape"></div>
-          <div class="blood-vessel vessel-1"></div>
-          <div class="blood-vessel vessel-2"></div>
-          <div class="blood-vessel vessel-3"></div>
-          <div class="blood-cell cell-1"></div>
-          <div class="blood-cell cell-2"></div>
-          <div class="blood-cell cell-3"></div>
-          <div class="blood-cell cell-4"></div>
-        </div>
-      </div>
-      <p style="text-align: center; color: #ffb0bb;"><i class="fas fa-sync-alt fa-spin"></i> Watch it beat! Realistic pumping animation</p>
-    </div>
-
-    <!-- Tabs Navigation -->
-    <div class="tab-container">
-      <button class="tab-btn active" onclick="showTab('overview')"><i class="fas fa-info-circle"></i> Overview</button>
-      <button class="tab-btn" onclick="showTab('anatomy')"><i class="fas fa-cube"></i> Anatomy</button>
-      <button class="tab-btn" onclick="showTab('function')"><i class="fas fa-chart-line"></i> Function</button>
-      <button class="tab-btn" onclick="showTab('diseases')"><i class="fas fa-hospital"></i> Disorders</button>
-      <button class="tab-btn" onclick="showTab('facts')"><i class="fas fa-lightbulb"></i> Fun Facts</button>
-    </div>
-
-    <!-- Tab 1: Overview -->
-    <div id="overview" class="tab-content active">
-      <div class="expert-card">
-        <div class="card-header">
-          <i class="fas fa-heart-circle-bolt" style="color: #ff8da1;"></i>
-          <h3>What is the Heart? (Wikipedia)</h3>
-        </div>
-        <p>The <strong>heart</strong> is a muscular organ in most animals, which pumps blood through the blood vessels of the circulatory system. The pumped blood carries oxygen and nutrients to the body, while carrying metabolic waste such as carbon dioxide to the lungs. In humans, the heart is approximately the size of a closed fist and is located between the lungs, in the middle compartment of the chest.</p>
-        
-        <div class="info-box">
-          <i class="fas fa-clock"></i>
-          <strong>Did you know?</strong> The human heart beats more than 2.5 billion times during an average lifetime!
-        </div>
-
-        <h4 style="color: #ffb0bb; margin: 20px 0 10px;"><i class="fas fa-ruler"></i> Quick Statistics</h4>
-        <table class="comparison-table">
-          <tr><td>Average weight</td><td>250–350 grams (9–12 oz)</td></tr>
-          <tr><td>Length</td><td>12 cm (5 inches)</td></tr>
-          <tr><td>Width</td><td>8 cm (3.5 inches)</td></tr>
-          <tr><td>Thickness</td><td>6 cm (2.5 inches)</td></tr>
-          <tr><td>Daily beats</td><td>~100,000 times</td></tr>
-          <tr><td>Daily blood pumped</td><td>~7,570 liters (2,000 gallons)</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- Tab 2: Anatomy -->
-    <div id="anatomy" class="tab-content">
-      <div class="expert-card">
-        <div class="card-header">
-          <i class="fas fa-cubes" style="color: #ff8da1;"></i>
-          <h3>Heart Anatomy (Wikipedia)</h3>
-        </div>
-        
-        <h4 style="color: #ffb0bb; margin: 15px 0;">Four Chambers</h4>
-        <ul>
-          <li><strong>Right Atrium</strong> – Receives deoxygenated blood from the body through the superior and inferior vena cava.</li>
-          <li><strong>Right Ventricle</strong> – Pumps deoxygenated blood to the lungs via the pulmonary artery.</li>
-          <li><strong>Left Atrium</strong> – Receives oxygenated blood from the lungs through the pulmonary veins.</li>
-          <li><strong>Left Ventricle</strong> – Pumps oxygenated blood to the entire body via the aorta (thickest chamber wall).</li>
-        </ul>
-
-        <h4 style="color: #ffb0bb; margin: 20px 0 10px;">Heart Valves</h4>
-        <ul>
-          <li><strong>Tricuspid Valve</strong> – Between right atrium and right ventricle</li>
-          <li><strong>Pulmonary Valve</strong> – Between right ventricle and pulmonary artery</li>
-          <li><strong>Mitral (Bicuspid) Valve</strong> – Between left atrium and left ventricle</li>
-          <li><strong>Aortic Valve</strong> – Between left ventricle and aorta</li>
-        </ul>
-
-        <h4 style="color: #ffb0bb; margin: 20px 0 10px;">Layers of Heart Wall</h4>
-        <ul>
-          <li><strong>Endocardium</strong> – Inner layer lining chambers and valves</li>
-          <li><strong>Myocardium</strong> – Middle muscular layer responsible for pumping</li>
-          <li><strong>Epicardium</strong> – Outer protective layer</li>
-          <li><strong>Pericardium</strong> – Double-walled sac containing the heart</li>
-        </ul>
-      </div>
-
-      <!-- Blood Flow Path -->
-      <div class="expert-card">
-        <div class="card-header">
-          <i class="fas fa-route" style="color: #ff8da1;"></i>
-          <h3>Blood Flow Through Heart</h3>
-        </div>
-        <div style="background: rgba(255,107,129,0.1); padding: 20px; border-radius: 16px; text-align: center; font-size: 1.1rem;">
-          <span style="color: #ff6b81;">Body</span> → 
-          <i class="fas fa-arrow-right"></i> Right Atrium → Right Ventricle → 
-          <i class="fas fa-arrow-right"></i> <span style="color: #7fcf7f;">Lungs (O₂ pickup)</span> → 
-          <i class="fas fa-arrow-right"></i> Left Atrium → Left Ventricle → 
-          <i class="fas fa-arrow-right"></i> <span style="color: #ff6b81;">Body</span>
-        </div>
-        <p style="margin-top:15px;"><i class="fas fa-info-circle"></i> Valves ensure one-way blood flow and prevent backflow.</p>
-      </div>
-    </div>
-
-    <!-- Tab 3: Function -->
-    <div id="function" class="tab-content">
-      <div class="expert-card">
-        <div class="card-header">
-          <i class="fas fa-chart-line" style="color: #ff8da1;"></i>
-          <h3>Cardiac Cycle & Function</h3>
-        </div>
-        
-        <h4 style="color: #ffb0bb;">Cardiac Cycle Phases</h4>
-        <ul>
-          <li><strong>Systole</strong> – Contraction phase: Ventricles contract, pumping blood to lungs and body</li>
-          <li><strong>Diastole</strong> – Relaxation phase: Chambers fill with blood</li>
-        </ul>
-
-        <h4 style="color: #ffb0bb; margin: 20px 0 10px;">Electrical Conduction System</h4>
-        <ul>
-          <li><strong>SA Node (Sinoatrial Node)</strong> – Natural pacemaker, initiates heartbeat (60-100 bpm)</li>
-          <li><strong>AV Node (Atrioventricular Node)</strong> – Delays signal, allowing ventricles to fill</li>
-          <li><strong>Bundle of His</strong> – Conducts signal to ventricles</li>
-          <li><strong>Purkinje Fibers</strong> – Spread signal throughout ventricular walls</li>
-        </ul>
-
-        <div class="info-box">
-          <i class="fas fa-bolt"></i>
-          <strong>ECG/EKG:</strong> Electrocardiogram records the heart's electrical activity through P wave, QRS complex, and T wave.
-        </div>
-
-        <h4 style="color: #ffb0bb; margin: 20px 0 10px;">Cardiac Output</h4>
-        <p><strong>Cardiac Output = Heart Rate × Stroke Volume</strong></p>
-        <p>Average resting cardiac output: ~5 liters/minute. During exercise, it can increase 4-7 times!</p>
-      </div>
-    </div>
-
-    <!-- Tab 4: Disorders -->
-    <div id="diseases" class="tab-content">
-      <div class="expert-card">
-        <div class="card-header">
-          <i class="fas fa-hospital" style="color: #ff8da1;"></i>
-          <h3>Common Heart Disorders (Wikipedia)</h3>
-        </div>
-        
-        <ul class="disease-list">
-          <li>
-            <strong><i class="fas fa-heart-crack"></i> Coronary Artery Disease (CAD)</strong>
-            Plaque buildup in coronary arteries reduces blood flow to heart muscle. Leading cause of heart attacks.
-          </li>
-          <li>
-            <strong><i class="fas fa-heart-pulse"></i> Arrhythmia</strong>
-            Irregular heartbeat - too fast (tachycardia), too slow (bradycardia), or chaotic (fibrillation).
-          </li>
-          <li>
-            <strong><i class="fas fa-heart"></i> Heart Failure</strong>
-            Heart cannot pump enough blood to meet body's needs. Not a sudden stop, but gradual weakening.
-          </li>
-          <li>
-            <strong><i class="fas fa-valve"></i> Valvular Heart Disease</strong>
-            Damage or defect in one of the four heart valves (stenosis or regurgitation).
-          </li>
-          <li>
-            <strong><i class="fas fa-baby"></i> Congenital Heart Defects</strong>
-            Structural problems present at birth (e.g., septal defects, tetralogy of Fallot).
-          </li>
-          <li>
-            <strong><i class="fas fa-heart-circle-exclamation"></i> Myocardial Infarction (Heart Attack)</strong>
-            Blood flow blockage causes death of heart muscle tissue.
-          </li>
-        </ul>
-
-        <div class="info-box">
-          <i class="fas fa-shield-heart"></i>
-          <strong>Prevention Tips:</strong> Regular exercise, healthy diet (low saturated fat), no smoking, stress management, regular checkups.
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab 5: Fun Facts -->
-    <div id="facts" class="tab-content">
-      <div class="expert-card">
-        <div class="card-header">
-          <i class="fas fa-lightbulb" style="color: #ffd966;"></i>
-          <h3>Amazing Heart Facts</h3>
-        </div>
-        
-        <div class="fun-fact-grid">
-          <div class="fact-card">
-            <div class="fact-emoji">🫀</div>
-            <p>The heart starts beating at just 4 weeks after conception!</p>
-          </div>
-          <div class="fact-card">
-            <div class="fact-emoji">🐳</div>
-            <p>A blue whale's heart weighs about 400 kg (880 lbs) - size of a small car!</p>
-          </div>
-          <div class="fact-card">
-            <div class="fact-emoji">😂</div>
-            <p>Laughing is good for your heart - it increases blood flow by 20%!</p>
-          </div>
-          <div class="fact-card">
-            <div class="fact-emoji">❤️</div>
-            <p>Women's hearts beat faster than men's (78 vs 70 bpm average).</p>
-          </div>
-          <div class="fact-card">
-            <div class="fact-emoji">⚡</div>
-            <p>Heart creates enough energy daily to drive a truck 32 km (20 miles)!</p>
-          </div>
-          <div class="fact-card">
-            <div class="fact-emoji">🩸</div>
-            <p>Your body has about 100,000 km (60,000 miles) of blood vessels!</p>
+      <section class="stats-module" aria-label="Heart stats">
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fa-solid fa-heart-circle-bolt"></i></div>
+          <div class="stat-info">
+            <div class="label">Avg BPM</div>
+            <div class="value">72</div>
           </div>
         </div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+          <div class="stat-info">
+            <div class="label">Module XP</div>
+            <div class="value">+20</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-info">
+            <div class="label">Status</div>
+            <div class="value" id="heartStatusDisplay">Ready</div>
+          </div>
+        </div>
+      </section>
+    </header>
 
-        <div class="info-box" style="margin-top: 20px;">
-          <i class="fas fa-wikipedia-w"></i>
-          <strong>Source:</strong> Information adapted from Wikipedia - The Free Encyclopedia. All content available under CC BY-SA license.
+    <!-- MAIN CONTENT -->
+    <main>
+      <!-- Animated Heart Card -->
+      <div class="card">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <i class="fa-solid fa-heart" style="color: var(--coral); font-size: 1.6rem;"></i>
+          <h3 style="font-weight: 700;">Animated Heart ❤️</h3>
+        </div>
+        <div class="cartoon-heart-container">
+          <div class="cartoon-heart">
+            <div class="heart-shape" style="position:relative; width:100px; height:90px; margin:0 auto;">
+              <style>
+                .heart-shape:before, .heart-shape:after {
+                  position: absolute; content: ""; left: 50px; top: 0; width: 50px; height: 80px;
+                  background: #ff5e7a; border-radius: 50px 50px 0 0; transform: rotate(-45deg);
+                  transform-origin: 0 100%; box-shadow: 0 0 20px #ff3b5c;
+                }
+                .heart-shape:after { left: 0; transform: rotate(45deg); transform-origin: 100% 100%; }
+              </style>
+            </div>
+            <div class="blood-vessel" style="width:12px; height:40px; top:-30px; left:44px; border-radius:10px;"></div>
+            <div class="blood-vessel" style="width:15px; height:35px; top:10px; right:-20px; border-radius:10px;"></div>
+            <div class="blood-vessel" style="width:10px; height:30px; bottom:-20px; left:45px; border-radius:10px;"></div>
+            <div class="blood-cell" style="top:20px; left:10px;"></div>
+            <div class="blood-cell" style="top:50px; left:20px;"></div>
+            <div class="blood-cell" style="top:30px; right:15px;"></div>
+            <div class="blood-cell" style="bottom:20px; left:30px;"></div>
+          </div>
+        </div>
+        <p style="text-align: center; color: var(--muted-strong);"><i class="fa-solid fa-rotate fa-spin"></i> Watch it beat! Realistic pumping animation</p>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-container">
+        <button class="tab-btn active" data-tab="overview"><i class="fa-solid fa-info-circle"></i>Overview</button>
+        <button class="tab-btn" data-tab="anatomy"><i class="fa-solid fa-cube"></i>Anatomy</button>
+        <button class="tab-btn" data-tab="function"><i class="fa-solid fa-chart-line"></i>Function</button>
+        <button class="tab-btn" data-tab="diseases"><i class="fa-solid fa-hospital"></i>Disorders</button>
+        <button class="tab-btn" data-tab="facts"><i class="fa-solid fa-lightbulb"></i>Fun Facts</button>
+      </div>
+
+      <!-- OVERVIEW TAB -->
+      <div id="overview" class="tab-content active">
+        <div class="card">
+          <h3 style="display: flex; gap: 10px; margin-bottom: 16px;"><i class="fa-solid fa-heart-circle-bolt" style="color:var(--coral);"></i> What is the Heart? (Wikipedia)</h3>
+          <p>The <strong>heart</strong> is a muscular organ that pumps blood through the circulatory system. In humans, it's about the size of a closed fist, located in the middle mediastinum.</p>
+          <div class="info-box">
+            <i class="fa-solid fa-clock"></i> <strong>Did you know?</strong> The human heart beats ~2.5 billion times in a lifetime!
+          </div>
+          <h4 style="margin: 20px 0 10px; color: var(--coral);"><i class="fa-solid fa-ruler"></i> Quick Statistics</h4>
+          <table class="comparison-table">
+            <tr><td>Weight</td><td>250–350 g</td></tr>
+            <tr><td>Dimensions</td><td>12×8×6 cm</td></tr>
+            <tr><td>Daily beats</td><td>~100,000</td></tr>
+            <tr><td>Daily blood pumped</td><td>~7,570 liters</td></tr>
+          </table>
         </div>
       </div>
-    </div>
 
-    <!-- 3D Model Section -->
-    <div class="expert-card">
-      <div class="card-header">
-        <i class="fas fa-cube" style="color: #7aaaff;"></i>
-        <h3>3D Interactive Heart Model</h3>
+      <!-- ANATOMY TAB -->
+      <div id="anatomy" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-cubes" style="color:var(--coral); margin-right:10px;"></i>Heart Anatomy</h3>
+          <h4 style="color:var(--coral); margin:15px 0;">Four Chambers</h4>
+          <ul style="padding-left:20px;">
+            <li><strong>Right Atrium</strong> – receives deoxygenated blood</li>
+            <li><strong>Right Ventricle</strong> – pumps to lungs</li>
+            <li><strong>Left Atrium</strong> – receives oxygenated blood</li>
+            <li><strong>Left Ventricle</strong> – pumps to body (thickest wall)</li>
+          </ul>
+          <h4 style="color:var(--coral); margin:20px 0;">Valves</h4>
+          <ul><li>Tricuspid, Pulmonary, Mitral, Aortic</li></ul>
+          <h4 style="color:var(--coral);">Layers</h4>
+          <ul><li>Endocardium, Myocardium, Epicardium, Pericardium</li></ul>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-route"></i> Blood Flow Path</h3>
+          <div style="background:rgba(255,107,129,0.1); padding:18px; border-radius:var(--radius); text-align:center;">
+            Body → Right Atrium → Right Ventricle → Lungs → Left Atrium → Left Ventricle → Body
+          </div>
+        </div>
       </div>
-      <p>Explore the heart in 3D! Rotate, zoom, and examine all anatomical structures.</p>
-      <div style="border-radius: 20px; overflow: hidden; margin-top: 15px; background: #000;">
-        <iframe width="100%" height="400" src="https://sketchfab.com/models/5b03884c9c3c4e9b9c5c5d6c9a8c9b7e/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0" frameborder="0" allow="autoplay; fullscreen; xr-spatial-tracking"></iframe>
+
+      <!-- FUNCTION TAB -->
+      <div id="function" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-chart-line" style="color:var(--coral);"></i> Cardiac Cycle & Conduction</h3>
+          <p><strong>Systole</strong> (contraction) / <strong>Diastole</strong> (relaxation)</p>
+          <h4 style="color:var(--coral); margin-top:15px;">Electrical System</h4>
+          <ul><li>SA node (pacemaker) → AV node → Bundle of His → Purkinje fibers</li></ul>
+          <div class="info-box"><i class="fa-solid fa-bolt"></i> ECG: P wave, QRS complex, T wave</div>
+          <p><strong>Cardiac Output = HR × SV</strong> (~5 L/min resting)</p>
+        </div>
       </div>
-      <p style="font-size:0.8rem; margin-top:8px;"><i class="fas fa-info-circle"></i> Drag to rotate · Scroll to zoom · Click parts for info (Coming soon: Replace with your Sketchfab model ID)</p>
-    </div>
 
-    <!-- Action Buttons -->
-    <div style="display: flex; gap: 20px; margin-top: 20px;">
-      <a href="quiz.html?system=heart" class="pill-link" style="flex:1; justify-content:center;">
-        <i class="fas fa-pencil"></i> Take Heart Quiz (10 Qs)
-      </a>
-      <a href="index.html" class="pill-link" style="flex:1; justify-content:center;">
-        <i class="fas fa-arrow-left"></i> Back to Human Body Lab
-      </a>
-    </div>
-  </main>
+      <!-- DISORDERS TAB -->
+      <div id="diseases" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-hospital" style="color:var(--coral);"></i> Common Disorders</h3>
+          <ul class="disease-list">
+            <li><strong>Coronary Artery Disease</strong> – plaque buildup</li>
+            <li><strong>Arrhythmia</strong> – irregular heartbeat</li>
+            <li><strong>Heart Failure</strong> – reduced pumping</li>
+            <li><strong>Valvular disease</strong> – stenosis/regurgitation</li>
+            <li><strong>Myocardial Infarction</strong> – heart attack</li>
+          </ul>
+          <div class="info-box"><i class="fa-solid fa-shield-heart"></i> Prevention: exercise, healthy diet, no smoking.</div>
+        </div>
+      </div>
 
-  <script src="assets/js/particles.js"></script>
-  <script src="assets/js/scoreManager.js"></script>
+      <!-- FUN FACTS TAB -->
+      <div id="facts" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-lightbulb" style="color:var(--amber);"></i> Amazing Heart Facts</h3>
+          <div class="fun-fact-grid">
+            <div class="fact-card"><div class="fact-emoji">🫀</div><p>Starts beating at 4 weeks gestation</p></div>
+            <div class="fact-card"><div class="fact-emoji">🐳</div><p>Blue whale heart ~400 kg</p></div>
+            <div class="fact-card"><div class="fact-emoji">😂</div><p>Laughing boosts blood flow 20%</p></div>
+            <div class="fact-card"><div class="fact-emoji">⚡</div><p>Heart energy could drive a truck 32 km/day</p></div>
+            <div class="fact-card"><div class="fact-emoji">🩸</div><p>100,000 km of blood vessels</p></div>
+          </div>
+          <p style="margin-top:20px; font-size:0.9rem;"><i class="fa-brands fa-wikipedia-w"></i> Source: Wikipedia (CC BY-SA)</p>
+        </div>
+      </div>
+
+      <!-- 3D MODEL CARD -->
+      <div class="card">
+        <h3><i class="fa-solid fa-cube" style="color:var(--blue); margin-right:10px;"></i>3D Interactive Heart Model</h3>
+        <p style="margin-bottom:12px;">Explore the heart in 3D — rotate, zoom, examine structures.</p>
+        <div style="border-radius:var(--radius); overflow:hidden; background:#000;">
+          <iframe width="100%" height="400" src="https://sketchfab.com/models/5b03884c9c3c4e9b9c5c5d6c9a8c9b7e/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0" frameborder="0" allow="autoplay; fullscreen; xr-spatial-tracking"></iframe>
+        </div>
+        <p style="font-size:0.8rem; margin-top:8px;"><i class="fa-solid fa-info-circle"></i> Drag to rotate · Scroll to zoom (replace with your Sketchfab ID)</p>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-bar">
+        <button class="control-button primary" id="completeHeartBtn"><i class="fa-solid fa-check"></i> Mark as Completed (+20 XP)</button>
+        <a href="index.html" class="pill-link"><i class="fa-solid fa-arrow-left"></i> Back to Human Body Lab</a>
+      </div>
+    </main>
+  </div>
+
   <script>
-    // Update XP Display
-    function updateXPDisplay() {
-      document.getElementById('xpDisplay').innerText = parseInt(localStorage.getItem('labScore')) || 0;
-    }
-    updateXPDisplay();
-    window.addEventListener('storage', updateXPDisplay);
-    
-    // Tab Switching Function
-    function showTab(tabId) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
+    (() => {
+      "use strict";
+      // ---------- SCORE & COMPLETION LOGIC (sync with index) ----------
+      const STORAGE_KEYS = { score: "labScore", completed: "labCompletedSystems" };
+      const HEART_ID = "heart";
+      const HEART_XP = 20;
+
+      // Helper functions
+      function getScore() {
+        let val = parseInt(localStorage.getItem(STORAGE_KEYS.score), 10);
+        return isNaN(val) ? 0 : val;
+      }
+      function setScore(score) { localStorage.setItem(STORAGE_KEYS.score, score); }
+      function getCompleted() {
+        try {
+          const raw = JSON.parse(localStorage.getItem(STORAGE_KEYS.completed) || "[]");
+          return new Set(Array.isArray(raw) ? raw : []);
+        } catch { return new Set(); }
+      }
+      function setCompleted(set) {
+        localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify([...set]));
+      }
+
+      // UI elements
+      const statusDisplay = document.getElementById('heartStatusDisplay');
+      const completeBtn = document.getElementById('completeHeartBtn');
+
+      function updateUI() {
+        const completed = getCompleted();
+        const isCompleted = completed.has(HEART_ID);
+        statusDisplay.textContent = isCompleted ? 'Completed' : 'Ready';
+        if (isCompleted) {
+          completeBtn.disabled = true;
+          completeBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Already Completed';
+          completeBtn.style.opacity = '0.7';
+        } else {
+          completeBtn.disabled = false;
+          completeBtn.innerHTML = '<i class="fa-solid fa-check"></i> Mark as Completed (+20 XP)';
+          completeBtn.style.opacity = '1';
+        }
+      }
+
+      // Complete action
+      function completeHeartModule() {
+        const completed = getCompleted();
+        if (completed.has(HEART_ID)) return;
+
+        completed.add(HEART_ID);
+        setCompleted(completed);
+
+        const currentScore = getScore();
+        setScore(currentScore + HEART_XP);
+
+        updateUI();
+        // Optional: show feedback
+        alert('✅ Heart module completed! +20 XP added to your Lab Score.');
+      }
+
+      completeBtn.addEventListener('click', completeHeartModule);
+
+      // Sync with storage changes from other tabs
+      window.addEventListener('storage', (e) => {
+        if ([STORAGE_KEYS.score, STORAGE_KEYS.completed].includes(e.key)) updateUI();
       });
-      
-      // Remove active class from all buttons
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
+
+      // Tabs functionality
+      const tabs = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
+      tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+          tabs.forEach(b => b.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(tabId).classList.add('active');
+        });
       });
-      
-      // Show selected tab
-      document.getElementById(tabId).classList.add('active');
-      
-      // Add active class to clicked button
-      event.target.closest('.tab-btn').classList.add('active');
-    }
-    
-    // Make showTab globally accessible
-    window.showTab = showTab;
-    
-    // Add hover effects to disease cards
-    document.querySelectorAll('.fact-card').forEach(card => {
-      card.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-5px) scale(1.02)';
-      });
-      card.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0) scale(1)';
-      });
-    });
+
+      // Particles (same as index)
+      const canvas = document.getElementById('particles');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const count = reduced ? 40 : 100;
+        let width, height, dpr;
+        const particles = [];
+
+        function resize() {
+          dpr = Math.min(devicePixelRatio || 1, 2);
+          width = window.innerWidth; height = window.innerHeight;
+          canvas.width = width * dpr; canvas.height = height * dpr;
+          canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        function initParticles() {
+          particles.length = 0;
+          for (let i=0; i<count; i++) {
+            particles.push({
+              x: Math.random()*width, y: Math.random()*height,
+              vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+              r: Math.random()*2+0.8
+            });
+          }
+        }
+        function draw() {
+          ctx.clearRect(0,0,width,height);
+          for (let i=0; i<particles.length; i++) {
+            for (let j=i+1; j<particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const dist = Math.hypot(dx, dy);
+              if (dist < 130) {
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(255,107,129, ${0.12*(1-dist/130)})`;
+                ctx.lineWidth = 0.7;
+                ctx.stroke();
+              }
+            }
+          }
+          particles.forEach(p => {
+            const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+            grad.addColorStop(0, '#fff9fa');
+            grad.addColorStop(0.5, '#ff8f9c');
+            grad.addColorStop(1, 'rgba(255,107,129,0)');
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fillStyle = grad; ctx.fill();
+            if (!reduced) { p.x += p.vx; p.y += p.vy; if (p.x<0) p.x=width; if (p.x>width) p.x=0; if (p.y<0) p.y=height; if (p.y>height) p.y=0; }
+          });
+          if (!reduced) requestAnimationFrame(draw);
+        }
+        resize(); initParticles(); draw();
+        window.addEventListener('resize', () => { resize(); initParticles(); });
+      }
+
+      updateUI();
+    })();
   </script>
 </body>
 </html>
