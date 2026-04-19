@@ -3,65 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brain · Human Body Lab</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+  <title>Brain | Human Body Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #05070a; --bg-panel: #0a0f1a; --primary-cyan: #00f0ff; --primary-blue: #3f7ce5;
+      --accent-pink: #ff007f; --accent-purple: #9d4edd; --text-primary: #ffffff; --text-secondary: #a0b3d9;
+      --glass-border: rgba(0, 240, 255, 0.15); --glow: 0 0 20px rgba(0, 240, 255, 0.3);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-primary); line-height: 1.5; }
+    #neural-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 20% 30%, #10182f, #05070a); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .glass-panel { background: rgba(10, 15, 26, 0.7); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin-bottom: 24px; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: var(--primary-cyan); text-decoration: none; }
+    h1 { font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #fff, var(--primary-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+    .subtitle { color: var(--text-secondary); margin-bottom: 24px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid var(--glass-border); }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--primary-cyan); }
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .tab-btn { background: transparent; border: 1px solid var(--glass-border); color: var(--text-secondary); padding: 12px 24px; border-radius: 40px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.2s; }
+    .tab-btn.active { background: var(--primary-cyan); color: var(--bg-dark); border-color: var(--primary-cyan); box-shadow: var(--glow); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .function-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+    .highlight { color: var(--primary-cyan); font-weight: 600; }
+    .btn { background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue)); border: none; color: var(--bg-dark); font-weight: 600; padding: 14px 28px; border-radius: 40px; cursor: pointer; }
+  </style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
-  <div class="neural-bg" style="background: radial-gradient(circle at 30% 40%, #141e3a, #03050b 95%);"></div>
-
-  <header class="expert-header" style="border-bottom-color: #7aaaff;">
-    <div class="logo-area">
-      <div class="system-icon"><i class="fas fa-brain"></i></div>
-      <div class="logo-text">
-        <h1 style="background: linear-gradient(135deg, #dbe5ff, #b0c8ff); -webkit-background-clip: text; background-clip: text;">BRAIN ATLAS</h1>
-        <div class="badge" style="color: #9eb9ff;">NERVOUS SYSTEM</div>
+  <canvas id="neural-bg"></canvas>
+  <div class="container">
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Neural Atlas</a>
+    
+    <div class="glass-panel">
+      <h1>BRAIN</h1>
+      <div class="subtitle">Nervous System · Central Processing Unit</div>
+      
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value">86B</div><div>Neurons</div></div>
+        <div class="stat-card"><div class="stat-value">2%</div><div>Body Weight</div></div>
+        <div class="stat-card"><div class="stat-value">20%</div><div>Energy Use</div></div>
+        <div class="stat-card"><div class="stat-value">4</div><div>Major Lobes</div></div>
       </div>
-    </div>
-    <div class="stats-module">
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fas fa-wave-square"></i></div>
-        <div class="stat-info">
-          <div class="label">NEURONS</div>
-          <div class="value">86B</div>
+      
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="overview">Overview</button>
+        <button class="tab-btn" data-tab="anatomy">Anatomy</button>
+        <button class="tab-btn" data-tab="physiology">Physiology</button>
+        <button class="tab-btn" data-tab="3d">3D Model</button>
+      </div>
+      
+      <div id="overview" class="tab-content active">
+        <p>The brain is the command center of the human nervous system. It receives input from sensory organs, interprets it, and sends output to muscles. It is the most complex organ, containing approximately 86 billion neurons.[reference:6]</p>
+        <div class="function-card">
+          <h3><i class="fas fa-microchip"></i> Primary Functions</h3>
+          <ul style="margin-left: 20px; margin-top: 10px;">
+            <li>Cognition, memory, and learning</li>
+            <li>Sensory processing and motor control</li>
+            <li>Regulation of vital functions (heart rate, breathing)</li>
+            <li>Emotion and behavior</li>
+          </ul>
         </div>
       </div>
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fas fa-star"></i></div>
-        <div class="stat-info">
-          <div class="label">XP</div>
-          <div class="value" id="xpDisplay">0</div>
+      
+      <div id="anatomy" class="tab-content">
+        <h3>Major Lobes of the Cerebrum</h3>
+        <ul style="list-style: none;">
+          <li><i class="fas fa-brain" style="color: var(--primary-cyan);"></i> <strong>Frontal Lobe</strong> – Executive functions, planning, personality.[reference:7]</li>
+          <li><i class="fas fa-brain"></i> <strong>Parietal Lobe</strong> – Sensory integration, spatial awareness.[reference:8]</li>
+          <li><i class="fas fa-brain"></i> <strong>Temporal Lobe</strong> – Auditory processing, memory, emotion.</li>
+          <li><i class="fas fa-brain"></i> <strong>Occipital Lobe</strong> – Visual processing.</li>
+        </ul>
+        <h3 style="margin-top: 24px;">Key Structures</h3>
+        <ul style="list-style: none;">
+          <li><i class="fas fa-dot-circle"></i> <strong>Cerebellum</strong> – Balance, coordination, fine motor control.</li>
+          <li><i class="fas fa-dot-circle"></i> <strong>Brainstem</strong> – Connects brain to spinal cord; controls breathing, heart rate.</li>
+          <li><i class="fas fa-dot-circle"></i> <strong>Limbic System</strong> – Emotion, memory (includes hippocampus, amygdala).</li>
+        </ul>
+      </div>
+      
+      <div id="physiology" class="tab-content">
+        <div class="function-card">
+          <h3>Neural Communication</h3>
+          <p>Neurons communicate via electrical and chemical signals. Action potentials travel down axons, triggering neurotransmitter release at synapses.</p>
+        </div>
+        <div class="function-card">
+          <h3>Protection & Support</h3>
+          <p>The brain is protected by the skull, meninges (dura mater, arachnoid mater, pia mater), and cerebrospinal fluid (CSF). The blood-brain barrier regulates substance entry.</p>
+        </div>
+      </div>
+      
+      <div id="3d" class="tab-content">
+        <div class="model-placeholder" style="background: #0a0f1a; border-radius: 20px; padding: 40px; text-align: center; border: 1px dashed var(--glass-border);">
+          <i class="fas fa-cube" style="font-size: 4rem; color: var(--primary-cyan);"></i>
+          <h3>3D Brain Model</h3>
+          <p>Interactive model coming soon. Embed your Sketchfab or Three.js viewer here.</p>
+          <button class="btn" onclick="markComplete()">Mark Complete (+20 XP)</button>
         </div>
       </div>
     </div>
-  </header>
-
-  <main class="container">
-    <div class="expert-card">
-      <div class="card-header"><i class="fas fa-brain"></i><h3>Overview</h3></div>
-      <p>The brain is the control center of the body. It processes information, stores memories, and controls movement and vital functions.</p>
-    </div>
-    <div class="expert-card">
-      <div class="card-header"><i class="fas fa-puzzle-piece"></i><h3>Major Parts</h3></div>
-      <ul>
-        <li><strong>Cerebrum</strong> – thinking, memory, voluntary movement.</li>
-        <li><strong>Cerebellum</strong> – balance and coordination.</li>
-        <li><strong>Brainstem</strong> – breathing, heartbeat, sleep.</li>
-      </ul>
-    </div>
-    <div class="expert-card">
-      <div class="card-header"><i class="fas fa-cube"></i><h3>3D Brain Model</h3></div>
-      <div style="border-radius:20px; overflow:hidden;"><iframe width="100%" height="350" src="https://sketchfab.com/models/REPLACE_WITH_BRAIN_MODEL_ID/embed?autostart=1" frameborder="0" allow="autoplay; fullscreen; xr-spatial-tracking"></iframe></div>
-    </div>
-    <div style="display: flex; gap:20px;">
-      <a href="quiz.html?system=brain" class="pill-link" style="flex:1; justify-content:center;"><i class="fas fa-pencil"></i> Brain Quiz</a>
-      <a href="index.html" class="pill-link" style="flex:1; justify-content:center;"><i class="fas fa-arrow-left"></i> Back</a>
-    </div>
-  </main>
-
-  <script src="assets/js/particles.js"></script>
-  <script src="assets/js/scoreManager.js"></script>
-  <script>document.getElementById('xpDisplay').innerText=localStorage.getItem('labScore')||0;</script>
+  </div>
+  
+  <script>
+    // Neural BG (same as before)
+    (function(){const c=document.getElementById('neural-bg'),x=c.getContext('2d');let w,h,p=[];function r(){w=window.innerWidth;h=window.innerHeight;c.width=w;c.height=h;}function i(n=60){p=[];for(let j=0;j<n;j++)p.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.15,vy:(Math.random()-0.5)*0.15,s:Math.random()*2+1});}function d(){x.clearRect(0,0,w,h);x.fillStyle='#00f0ff';x.shadowColor='#00f0ff';x.shadowBlur=6;p.forEach(o=>{o.x+=o.vx;o.y+=o.vy;if(o.x<0||o.x>w)o.vx*=-1;if(o.y<0||o.y>h)o.vy*=-1;x.beginPath();x.arc(o.x,o.y,o.s,0,Math.PI*2);x.fill();});x.shadowBlur=2;x.strokeStyle='rgba(0,240,255,0.05)';x.lineWidth=0.5;for(let a=0;a<p.length;a++)for(let b=a+1;b<p.length;b++){const dx=p[a].x-p[b].x,dy=p[a].y-p[b].y;if(Math.sqrt(dx*dx+dy*dy)<100){x.beginPath();x.moveTo(p[a].x,p[a].y);x.lineTo(p[b].x,p[b].y);x.stroke();}}requestAnimationFrame(d);}window.addEventListener('resize',()=>{r();i();});r();i();d();})();
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active');}));
+    function markComplete(){let xp=parseInt(localStorage.getItem('labScore')||'0');xp+=20;localStorage.setItem('labScore',xp);alert('+20 XP!');window.location.href='index.html';}
+  </script>
 </body>
 </html>
