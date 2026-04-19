@@ -482,7 +482,7 @@
     // 4. Load Model
     const loader = new GLTFLoader();
     // 🔁 IMPORTANT: Change this path to your actual model location
-    const modelPath = 'https://corsproxy.io/https://drive.google.com/file/d/12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H/view?usp=drive_link';
+    const modelPath = 'https://corsproxy.io/?' + encodeURIComponent('https://drive.google.com/uc?export=download&id=12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H');
     
     // Show a loading indicator while fetching
     const loadingDiv = document.createElement('div');
