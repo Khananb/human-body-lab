@@ -186,6 +186,13 @@
       transform: scale(1.02); 
     }
     
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
     .anatomy-list {
       list-style: none;
     }
@@ -230,6 +237,55 @@
       margin-bottom: 16px;
     }
     
+    /* Quiz Styles */
+    .quiz-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .quiz-option {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: all 0.2s;
+    }
+    
+    .quiz-option:hover:not(.correct):not(.wrong) {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--primary-cyan);
+    }
+    
+    .quiz-option.selected {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--primary-cyan);
+    }
+    
+    .quiz-option.correct {
+      background: rgba(0, 255, 136, 0.1);
+      border-color: #00ff88;
+    }
+    
+    .quiz-option.wrong {
+      background: rgba(255, 77, 77, 0.1);
+      border-color: #ff4d4d;
+    }
+    
+    .option-letter {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -259,6 +315,7 @@
         <button class="tab-btn" data-tab="anatomy">Anatomy</button>
         <button class="tab-btn" data-tab="physiology">Physiology</button>
         <button class="tab-btn" data-tab="3d">3D Model</button>
+        <button class="tab-btn" data-tab="quiz">Quiz</button>
       </div>
       
       <!-- Overview Tab -->
@@ -326,6 +383,35 @@
         <p style="margin-top: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;">
           <i class="fas fa-mouse"></i> Drag to rotate · Scroll to zoom
         </p>
+      </div>
+      
+      <!-- Quiz Tab -->
+      <div id="quiz" class="tab-content">
+        <div class="quiz-container">
+          <div id="quiz-progress" style="margin-bottom: 20px;">
+            <span id="question-counter">Question 1 of 10</span>
+            <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin-top: 8px;">
+              <div id="progress-bar-fill" style="width: 10%; height: 100%; background: var(--primary-cyan); border-radius: 3px;"></div>
+            </div>
+          </div>
+          
+          <div id="quiz-question" style="font-size: 1.3rem; font-weight: 500; margin-bottom: 24px;"></div>
+          
+          <div id="quiz-options" style="display: flex; flex-direction: column; gap: 12px;"></div>
+          
+          <div id="quiz-feedback" style="margin-top: 20px; min-height: 40px;"></div>
+          
+          <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+            <button id="prev-btn" class="btn" style="opacity: 0.7;" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+            <button id="next-btn" class="btn">Next <i class="fas fa-arrow-right"></i></button>
+          </div>
+          
+          <div id="quiz-result" style="display: none; text-align: center; margin-top: 30px;">
+            <h2>Quiz Complete!</h2>
+            <p style="font-size: 1.2rem;">Your Score: <span id="final-score" style="color: var(--primary-cyan); font-weight: 700;"></span></p>
+            <button class="btn" onclick="restartQuiz()" style="margin-top: 20px;">Restart Quiz</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -426,7 +512,175 @@
     }
   </script>
 
-  <!-- Three.js 3D Viewer (Module) with FIXED Model Path -->
+  <!-- Quiz JavaScript -->
+  <script>
+    // Heart Quiz Data
+    const quizQuestions = [
+      { question: "How many chambers does the human heart have?", options: ["2", "3", "4", "5"], correct: 2 },
+      { question: "Which chamber pumps oxygenated blood to the body?", options: ["Right Atrium", "Right Ventricle", "Left Atrium", "Left Ventricle"], correct: 3 },
+      { question: "What is the average resting heart rate for adults?", options: ["40-50 bpm", "60-100 bpm", "100-120 bpm", "120-140 bpm"], correct: 1 },
+      { question: "Which blood vessels carry blood away from the heart?", options: ["Veins", "Arteries", "Capillaries", "Venules"], correct: 1 },
+      { question: "What is the name of the heart's natural pacemaker?", options: ["AV node", "Bundle of His", "Purkinje fibers", "SA node"], correct: 3 },
+      { question: "Which valve lies between the left atrium and left ventricle?", options: ["Tricuspid", "Pulmonary", "Mitral (Bicuspid)", "Aortic"], correct: 2 },
+      { question: "What is the thickest layer of the heart wall responsible for contraction?", options: ["Endocardium", "Myocardium", "Epicardium", "Pericardium"], correct: 1 },
+      { question: "Which blood vessel returns deoxygenated blood from the body to the heart?", options: ["Aorta", "Pulmonary artery", "Superior vena cava", "Pulmonary vein"], correct: 2 },
+      { question: "What is the cardiac output of a healthy adult at rest?", options: ["1-2 L/min", "3-4 L/min", "5-6 L/min", "7-8 L/min"], correct: 2 },
+      { question: "Which of these is NOT a function of the cardiovascular system?", options: ["Transport oxygen", "Remove waste", "Produce hormones", "Regulate temperature"], correct: 2 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(quizQuestions.length).fill(null);
+    let quizSubmitted = false;
+
+    const questionEl = document.getElementById('quiz-question');
+    const optionsEl = document.getElementById('quiz-options');
+    const feedbackEl = document.getElementById('quiz-feedback');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const counterEl = document.getElementById('question-counter');
+    const progressFill = document.getElementById('progress-bar-fill');
+    const resultDiv = document.getElementById('quiz-result');
+
+    function loadQuestion(index) {
+      const q = quizQuestions[index];
+      questionEl.textContent = q.question;
+      
+      let optionsHtml = '';
+      q.options.forEach((opt, i) => {
+        const isSelected = userAnswers[index] === i;
+        const isCorrect = quizSubmitted && i === q.correct;
+        const isWrong = quizSubmitted && isSelected && i !== q.correct;
+        
+        let optionClass = 'quiz-option';
+        if (isSelected && !quizSubmitted) optionClass += ' selected';
+        if (quizSubmitted) {
+          if (isCorrect) optionClass += ' correct';
+          if (isWrong) optionClass += ' wrong';
+        }
+        
+        optionsHtml += `
+          <div class="${optionClass}" data-option-index="${i}">
+            <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+            <span>${opt}</span>
+            ${isCorrect ? '<i class="fas fa-check-circle" style="color: #00ff88; margin-left: auto;"></i>' : ''}
+            ${isWrong ? '<i class="fas fa-times-circle" style="color: #ff4d4d; margin-left: auto;"></i>' : ''}
+          </div>
+        `;
+      });
+      optionsEl.innerHTML = optionsHtml;
+      
+      if (!quizSubmitted) {
+        document.querySelectorAll('.quiz-option').forEach(opt => {
+          opt.addEventListener('click', () => {
+            const selectedIndex = parseInt(opt.dataset.optionIndex);
+            userAnswers[currentQuestionIndex] = selectedIndex;
+            loadQuestion(currentQuestionIndex);
+            updateButtons();
+          });
+        });
+      }
+      
+      counterEl.textContent = `Question ${index + 1} of ${quizQuestions.length}`;
+      progressFill.style.width = `${((index + 1) / quizQuestions.length) * 100}%`;
+      
+      prevBtn.disabled = index === 0;
+      if (index === quizQuestions.length - 1) {
+        nextBtn.innerHTML = 'Submit <i class="fas fa-check"></i>';
+      } else {
+        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+      }
+      
+      if (quizSubmitted) {
+        const userAns = userAnswers[index];
+        if (userAns === q.correct) {
+          feedbackEl.innerHTML = '<p style="color: #00ff88;"><i class="fas fa-check-circle"></i> Correct! Well done.</p>';
+        } else {
+          feedbackEl.innerHTML = `<p style="color: #ff4d4d;"><i class="fas fa-times-circle"></i> Incorrect. The correct answer is: ${q.options[q.correct]}</p>`;
+        }
+      } else {
+        feedbackEl.innerHTML = '';
+      }
+    }
+
+    function updateButtons() {
+      if (!quizSubmitted) {
+        nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
+      }
+    }
+
+    function calculateScore() {
+      return userAnswers.reduce((score, ans, idx) => ans === quizQuestions[idx].correct ? score + 1 : score, 0);
+    }
+
+    function showResult() {
+      document.getElementById('quiz-progress').style.display = 'none';
+      questionEl.style.display = 'none';
+      optionsEl.style.display = 'none';
+      feedbackEl.style.display = 'none';
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      resultDiv.style.display = 'block';
+      document.getElementById('final-score').textContent = `${calculateScore()} / ${quizQuestions.length}`;
+      
+      // Award XP based on score
+      const score = calculateScore();
+      if (score >= 7) {
+        let xp = parseInt(localStorage.getItem('labScore') || '0');
+        xp += 30;
+        localStorage.setItem('labScore', xp);
+      }
+    }
+
+    window.restartQuiz = function() {
+      currentQuestionIndex = 0;
+      userAnswers = new Array(quizQuestions.length).fill(null);
+      quizSubmitted = false;
+      document.getElementById('quiz-progress').style.display = 'block';
+      questionEl.style.display = 'block';
+      optionsEl.style.display = 'flex';
+      feedbackEl.style.display = 'block';
+      prevBtn.style.display = 'block';
+      nextBtn.style.display = 'block';
+      resultDiv.style.display = 'none';
+      loadQuestion(0);
+      updateButtons();
+    };
+
+    prevBtn.addEventListener('click', () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion(currentQuestionIndex);
+        updateButtons();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (!quizSubmitted) {
+        if (currentQuestionIndex < quizQuestions.length - 1) {
+          currentQuestionIndex++;
+          loadQuestion(currentQuestionIndex);
+          updateButtons();
+        } else {
+          if (userAnswers.every(ans => ans !== null)) {
+            quizSubmitted = true;
+            loadQuestion(currentQuestionIndex);
+            updateButtons();
+            setTimeout(() => {
+              showResult();
+            }, 1500);
+          } else {
+            alert('Please answer all questions before submitting.');
+          }
+        }
+      }
+    });
+
+    // Initialize quiz
+    loadQuestion(0);
+    updateButtons();
+  </script>
+
+  <!-- Three.js 3D Viewer (Module) -->
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -473,19 +727,10 @@
 
     // 4. Load Model
     const loader = new GLTFLoader();
-    
-    // 🔥🔥🔥 YEH LO - SAHI AUR FIXED MODEL PATH 🔥🔥🔥
-    // Google Drive File ID: 12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H
-    // AllOrigins Proxy use kar rahe hain (zyada reliable)
     const fileId = '12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H';
     const googleDriveUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-const modelPath = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(https://drive.google.com/file/d/12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H/view?usp=drive_link}`;
+    const modelPath = `https://api.allorigins.win/raw?url=${encodeURIComponent(googleDriveUrl)}`;
     
-    // Alternative proxies (agar upar wala fail ho toh comment change karke try kar):
-    // const modelPath = `https://corsproxy.io/?${encodeURIComponent(googleDriveUrl)}`;
-    // const modelPath = `https://cors-anywhere.herokuapp.com/${googleDriveUrl}`;
-    
-    // Loading indicator
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'loading-placeholder';
     loadingDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i><p>Loading 3D Model...</p>';
@@ -535,8 +780,7 @@ const modelPath = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(
           loadingDiv.innerHTML = `
             <i class="fas fa-exclamation-triangle" style="color: #ff4d4d;"></i>
             <p style="color: #ff4d4d;">3D model load failed.</p>
-            <p style="font-size: 0.9rem; margin-top: 8px;">Possible reasons: CORS, file not public, or proxy down.</p>
-            <p style="font-size: 0.8rem; margin-top: 16px; color: #888;">Try alternative proxy in code comments.</p>
+            <p style="font-size: 0.9rem; margin-top: 8px;">Try refreshing or check console.</p>
           `;
         }
       }
