@@ -2,861 +2,657 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Heart | Human Body Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Heart · Human Body Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
-  <!-- Three.js Import Map -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
-      }
-    }
-  </script>
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    /* ========== FUTURISTIC CORE STYLES ========== */
+    /* ---------- GLOBAL (same as index) ---------- */
     :root {
-      --bg-dark: #05070a;
-      --bg-panel: #0a0f1a;
-      --primary-cyan: #00f0ff;
-      --primary-blue: #3f7ce5;
-      --accent-pink: #ff007f;
-      --accent-purple: #9d4edd;
-      --text-primary: #ffffff;
-      --text-secondary: #a0b3d9;
-      --glass-border: rgba(0, 240, 255, 0.15);
-      --glow: 0 0 20px rgba(0, 240, 255, 0.3);
+      color-scheme: dark;
+      --bg: #06080d;
+      --panel: rgba(13, 20, 30, 0.78);
+      --panel-strong: rgba(18, 27, 38, 0.92);
+      --line: rgba(190, 216, 255, 0.18);
+      --line-hot: rgba(125, 231, 215, 0.55);
+      --text: #f3f6fb;
+      --muted: #9eabbf;
+      --muted-strong: #c1cad8;
+      --blue: #86b7ff;
+      --teal: #7de7d7;
+      --coral: #ff8f78;
+      --amber: #ffd76a;
+      --green: #9be37d;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+      --radius: 8px;
+      --heart-glow: rgba(255, 107, 129, 0.45);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      font-family: 'Inter', sans-serif; 
-      background: var(--bg-dark); 
-      color: var(--text-primary); 
-      line-height: 1.5; 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
       min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 16% 18%, rgba(255, 107, 129, 0.18), transparent 31rem),
+        radial-gradient(circle at 85% 4%, rgba(255, 143, 120, 0.12), transparent 30rem),
+        linear-gradient(145deg, #06080d 0%, #09111a 48%, #06080d 100%);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", system-ui, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
-    
-    #neural-bg { 
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      width: 100%; 
-      height: 100%; 
-      z-index: -1; 
-      background: radial-gradient(circle at 20% 30%, #10182f, #05070a);
+
+    button, input, a { font: inherit; color: inherit; text-decoration: none; }
+
+    .neural-bg, #particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: -2;
     }
-    
-    .container { 
-      max-width: 1200px; 
-      margin: 0 auto; 
-      padding: 20px; 
-      position: relative;
-      z-index: 1;
-      scroll-behavior: smooth;
+    .neural-bg {
+      background: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+      background-size: 54px 54px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.4));
     }
-    
-    .glass-panel {
-      background: rgba(10, 15, 26, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    #particles { opacity: 0.65; }
+
+    .app-shell {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 22px 0 44px;
     }
-    
-    .back-link { 
-      display: inline-block; 
-      margin-bottom: 20px; 
-      color: var(--primary-cyan); 
-      text-decoration: none;
-      font-weight: 500;
+
+    /* ---------- HEADER (same structure) ---------- */
+    .expert-header {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      align-items: center;
+      gap: 20px;
+      padding: 18px 0 24px;
     }
-    .back-link:hover { text-shadow: var(--glow); }
-    
-    h1 { 
-      font-size: 3rem; 
-      font-weight: 700; 
-      background: linear-gradient(135deg, #fff, var(--primary-cyan)); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-      margin-bottom: 8px; 
-    }
-    
-    .subtitle { 
-      color: var(--text-secondary); 
-      margin-bottom: 24px; 
-      font-size: 1.1rem;
-    }
-    
-    .stats-grid { 
-      display: grid; 
-      grid-template-columns: repeat(4, 1fr); 
-      gap: 16px; 
-      margin-bottom: 24px; 
-    }
-    
-    .stat-card { 
-      background: rgba(0,0,0,0.3); 
-      border-radius: 16px; 
-      padding: 16px; 
-      text-align: center; 
-      border: 1px solid var(--glass-border); 
-    }
-    
-    .stat-value { 
-      font-size: 2rem; 
-      font-weight: 700; 
-      color: var(--primary-cyan); 
-    }
-    
-    .tabs { 
-      display: flex; 
-      gap: 8px; 
-      margin-bottom: 24px; 
-      flex-wrap: wrap; 
-    }
-    
-    .tab-btn {
-      background: transparent; 
-      border: 1px solid var(--glass-border); 
-      color: var(--text-secondary);
-      padding: 12px 24px; 
-      border-radius: 40px; 
-      cursor: pointer; 
-      font-size: 1rem; 
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    
-    .tab-btn.active { 
-      background: var(--primary-cyan); 
-      color: var(--bg-dark); 
-      border-color: var(--primary-cyan); 
-      box-shadow: var(--glow); 
-    }
-    
-    .tab-btn:hover:not(.active) { 
-      border-color: var(--primary-cyan); 
-      color: var(--primary-cyan); 
-    }
-    
-    .tab-content { 
-      display: none; 
-    }
-    
-    .tab-content.active { 
-      display: block; 
-    }
-    
-    .function-card { 
-      background: rgba(0,0,0,0.2); 
-      border-radius: 16px; 
-      padding: 20px; 
-      margin-bottom: 16px; 
-      border-left: 3px solid var(--primary-cyan);
-    }
-    
-    .highlight { 
-      color: var(--primary-cyan); 
-      font-weight: 600; 
-    }
-    
-    .btn { 
-      background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue)); 
-      border: none; 
-      color: var(--bg-dark); 
-      font-weight: 600; 
-      padding: 14px 28px; 
-      border-radius: 40px; 
-      cursor: pointer; 
-      transition: all 0.2s;
-    }
-    
-    .btn:hover { 
-      box-shadow: var(--glow); 
-      transform: scale(1.02); 
-    }
-    
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-      pointer-events: none;
-    }
-    
-    .anatomy-list {
-      list-style: none;
-    }
-    
-    .anatomy-list li {
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+    .logo-area {
       display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brain-icon {
+      display: grid;
+      width: 52px; height: 52px;
+      place-items: center;
+      border: 1px solid rgba(255, 107, 129, 0.45);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255, 107, 129, 0.22), rgba(255, 143, 120, 0.12));
+      color: var(--coral);
+      font-size: 1.75rem;
+      box-shadow: 0 0 26px var(--heart-glow);
+    }
+    .logo-text h1 {
+      color: var(--text);
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.08;
+    }
+    .logo-text .badge {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .stats-module {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(116px, 1fr));
+      gap: 10px;
+      width: min(520px, 100%);
+    }
+    .stat-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
       align-items: center;
       gap: 10px;
+      min-height: 66px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(10, 16, 24, 0.74);
+      box-shadow: var(--shadow);
     }
-    
-    .anatomy-list i {
-      color: var(--primary-cyan);
-      width: 24px;
+    .stat-icon {
+      display: grid;
+      width: 36px; height: 36px;
+      place-items: center;
+      border: 1px solid rgba(255, 107, 129, 0.4);
+      border-radius: var(--radius);
+      background: rgba(255, 107, 129, 0.1);
+      color: var(--coral);
     }
-    
-    /* 3D Viewer Container */
-    #model-container {
-      width: 100%;
-      height: 450px;
-      border-radius: 20px;
-      overflow: hidden;
-      background: #0a0f1a;
-      border: 1px solid var(--glass-border);
-      margin-top: 16px;
-      position: relative;
-    }
-    
-    .loading-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: var(--text-secondary);
-    }
-    
-    .loading-placeholder i {
-      font-size: 3rem;
-      color: var(--primary-cyan);
-      margin-bottom: 16px;
-    }
-    
-    /* Quiz Styles */
-    .quiz-container {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-    
-    .quiz-option {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 16px 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      transition: all 0.2s;
-    }
-    
-    .quiz-option:hover:not(.correct):not(.wrong) {
-      background: rgba(0, 240, 255, 0.1);
-      border-color: var(--primary-cyan);
-    }
-    
-    .quiz-option.selected {
-      background: rgba(0, 240, 255, 0.2);
-      border-color: var(--primary-cyan);
-    }
-    
-    .quiz-option.correct {
-      background: rgba(0, 255, 136, 0.1);
-      border-color: #00ff88;
-    }
-    
-    .quiz-option.wrong {
-      background: rgba(255, 77, 77, 0.1);
-      border-color: #ff4d4d;
-    }
-    
-    .option-letter {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .stat-info .label {
+      color: var(--muted);
+      font-size: 0.72rem;
       font-weight: 600;
+      text-transform: uppercase;
     }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      h1 { font-size: 2.2rem; }
+    .stat-info .value {
+      color: var(--text);
+      font-size: 1.34rem;
+      font-weight: 700;
+      line-height: 1.15;
     }
+
+    /* ---------- CARDS & PANELS (glass) ---------- */
+    .card, .expert-card, .tab-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px) saturate(140%);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    /* ---------- TABS (style like filter buttons) ---------- */
+    .tab-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 20px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.055);
+      color: var(--muted-strong);
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 150ms ease;
+      backdrop-filter: blur(8px);
+    }
+    .tab-btn i { color: var(--coral); }
+    .tab-btn.active {
+      border-color: rgba(255, 107, 129, 0.6);
+      background: rgba(255, 107, 129, 0.15);
+      color: white;
+      box-shadow: 0 0 16px var(--heart-glow);
+    }
+    .tab-btn:hover {
+      border-color: rgba(255, 107, 129, 0.5);
+      background: rgba(255, 107, 129, 0.08);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ---------- CARTOON HEART (restyled) ---------- */
+    .cartoon-heart-container {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(255, 107, 129, 0.05);
+      border-radius: var(--radius);
+      margin: 15px 0;
+      border: 1px dashed rgba(255, 107, 129, 0.2);
+    }
+    .cartoon-heart {
+      position: relative;
+      width: 200px; height: 180px;
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+    .heart-shape:before,
+    .heart-shape:after {
+      background: #ff5e7a;
+      box-shadow: 0 5px 20px rgba(255, 71, 87, 0.5);
+    }
+    .blood-vessel { background: #ff7b93; }
+    .blood-cell { background: #ff3b5c; }
+
+    /* ---------- FUN FACT GRID ---------- */
+    .fun-fact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .fact-card {
+      background: rgba(255, 107, 129, 0.08);
+      border: 1px solid rgba(255, 107, 129, 0.25);
+      border-radius: var(--radius);
+      padding: 18px;
+      text-align: center;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .fact-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 107, 129, 0.15);
+      border-color: var(--line-hot);
+    }
+    .fact-emoji { font-size: 2.2rem; margin-bottom: 8px; }
+
+    /* ---------- INFO BOX, TABLE, LIST ---------- */
+    .info-box {
+      background: rgba(255, 107, 129, 0.08);
+      border-left: 4px solid var(--coral);
+      padding: 15px 18px;
+      border-radius: var(--radius);
+      margin: 20px 0;
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+    .comparison-table td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .disease-list {
+      list-style: none;
+    }
+    .disease-list li {
+      padding: 14px;
+      margin: 8px 0;
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,107,129,0.15);
+    }
+    .disease-list strong {
+      color: var(--coral);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* ---------- BUTTONS (same as index) ---------- */
+    .control-button, .pill-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 20px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.055);
+      color: var(--text);
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+    .control-button.primary, .pill-link.primary {
+      border-color: rgba(255, 107, 129, 0.55);
+      background: linear-gradient(135deg, rgba(255,107,129,0.22), rgba(255,143,120,0.12));
+    }
+    .control-button:hover, .pill-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,107,129,0.7);
+      background: rgba(255,107,129,0.15);
+    }
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 920px) {
+      .expert-header { grid-template-columns: 1fr; }
+      .stats-module { width: 100%; }
+    }
+    @media (max-width: 640px) {
+      .app-shell { width: min(100% - 24px, 1440px); }
+      .stats-module { grid-template-columns: 1fr; }
+      .tab-btn { flex: 1 0 calc(50% - 10px); }
+    }
+
+    /* animations */
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      30% { transform: scale(1.1); }
+      60% { transform: scale(0.95); }
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.5; transform: scaleY(1.15); }
+    }
+    @keyframes flowBlood {
+      0% { transform: translate(0,0); opacity:1; }
+      50% { transform: translate(25px,-15px); opacity:0.5; }
+      100% { transform: translate(0,0); opacity:1; }
+    }
+    .blood-vessel { animation: pulse 2s infinite; }
+    .blood-cell { animation: flowBlood 3.5s infinite; }
   </style>
 </head>
 <body>
-  <canvas id="neural-bg"></canvas>
-  
-  <div class="container">
-    <a href="index.html" class="back-link" aria-label="Back to Neural Atlas"><i class="fas fa-arrow-left"></i> Back to Neural Atlas</a>
-    
-    <div class="glass-panel">
-      <h1>HEART</h1>
-      <div class="subtitle">Cardiovascular System · Primary Circulatory Pump</div>
-      
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-value">72</div><div>Avg BPM</div></div>
-        <div class="stat-card"><div class="stat-value">100k</div><div>Beats/Day</div></div>
-        <div class="stat-card"><div class="stat-value">5L</div><div>Blood/Min</div></div>
-        <div class="stat-card"><div class="stat-value">4</div><div>Chambers</div></div>
-      </div>
-      
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="overview" aria-label="Overview Tab">Overview</button>
-        <button class="tab-btn" data-tab="anatomy" aria-label="Anatomy Tab">Anatomy</button>
-        <button class="tab-btn" data-tab="physiology" aria-label="Physiology Tab">Physiology</button>
-        <button class="tab-btn" data-tab="3d" aria-label="3D Model Tab">3D Model</button>
-        <button class="tab-btn" data-tab="quiz" aria-label="Quiz Tab">Quiz</button>
-      </div>
-      
-      <!-- Overview Tab -->
-      <div id="overview" class="tab-content active">
-        <p style="margin-bottom: 20px;">The heart is a muscular organ about the size of a fist, located just behind and slightly left of the breastbone. It pumps blood through the blood vessels of the circulatory system, delivering oxygen and nutrients to all parts of the body while removing carbon dioxide and other metabolic wastes. This process occurs continuously throughout life, with the heart beating approximately 100,000 times per day.</p>
-        <div class="function-card">
-          <h3><i class="fas fa-heartbeat" style="color: var(--primary-cyan);"></i> Primary Functions</h3>
-          <ul style="margin-left: 20px; margin-top: 10px;">
-            <li>Pumping oxygenated blood to the body</li>
-            <li>Pumping deoxygenated blood to the lungs</li>
-            <li>Maintaining blood pressure</li>
-            <li>Endocrine function (releases ANP to regulate blood pressure)</li>
-          </ul>
-        </div>
-        <p><span class="highlight">Fun Fact:</span> The heart starts beating at just 4 weeks of gestation and will beat approximately 2.5 billion times in an average lifetime.</p>
-      </div>
-      
-      <!-- Anatomy Tab -->
-      <div id="anatomy" class="tab-content">
-        <h3>Chambers & Valves</h3>
-        <ul class="anatomy-list">
-          <li><i class="fas fa-circle"></i> <strong>Right Atrium</strong> - Receives deoxygenated blood from the body</li>
-          <li><i class="fas fa-circle"></i> <strong>Right Ventricle</strong> - Pumps blood to the lungs via the pulmonary artery</li>
-          <li><i class="fas fa-circle"></i> <strong>Left Atrium</strong> - Receives oxygenated blood from the lungs</li>
-          <li><i class="fas fa-circle"></i> <strong>Left Ventricle</strong> - Pumps oxygenated blood to the body (thickest wall)</li>
-        </ul>
-        <h3 style="margin-top: 24px;">Layers of the Heart Wall</h3>
-        <ul class="anatomy-list">
-          <li><i class="fas fa-layer-group"></i> <strong>Endocardium</strong> - Inner lining</li>
-          <li><i class="fas fa-layer-group"></i> <strong>Myocardium</strong> - Muscular middle layer responsible for pumping</li>
-          <li><i class="fas fa-layer-group"></i> <strong>Epicardium</strong> - Outer protective layer</li>
-          <li><i class="fas fa-layer-group"></i> <strong>Pericardium</strong> - Fibrous sac surrounding the heart</li>
-        </ul>
-      </div>
-      
-      <!-- Physiology Tab -->
-      <div id="physiology" class="tab-content">
-        <div class="function-card">
-          <h3><i class="fas fa-bolt"></i> Cardiac Conduction System</h3>
-          <p>The heartbeat is initiated by the sinoatrial (SA) node, the natural pacemaker. The electrical impulse travels through the atria, then to the atrioventricular (AV) node, Bundle of His, and finally through the Purkinje fibers to the ventricles. This coordinated electrical activity ensures that the atria contract first to fill the ventricles, followed by ventricular contraction to pump blood throughout the body.</p>
-        </div>
-        <div class="function-card">
-          <h3><i class="fas fa-tachometer-alt"></i> Cardiac Cycle</h3>
-          <p><strong>Systole:</strong> Contraction phase, blood is ejected from the ventricles into the aorta and pulmonary artery.<br>
-          <strong>Diastole:</strong> Relaxation phase, chambers fill with blood from the atria and veins.</p>
-          <p>Cardiac Output (CO) = Heart Rate (HR) × Stroke Volume (SV). Normal resting CO is about 5 L/min, meaning the heart pumps approximately 5 liters of blood every minute at rest.</p>
-        </div>
-        <div class="function-card">
-          <h3><i class="fas fa-exclamation-triangle"></i> Common Disorders</h3>
-          <p>Coronary Artery Disease, Arrhythmias, Heart Failure, Valvular Disease, Myocardial Infarction (heart attack), Hypertension, and Congenital Heart Defects are among the most common cardiovascular conditions affecting millions worldwide.</p>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="neural-bg" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <!-- HEADER (similar to index, heart themed) -->
+    <header class="expert-header">
+      <div class="logo-area">
+        <div class="brain-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="logo-text">
+          <h1>Heart Atlas</h1>
+          <div class="badge">Cardiovascular System · Expert Module</div>
         </div>
       </div>
-      
-      <!-- 3D Model Tab -->
-      <div id="3d" class="tab-content">
-        <div id="model-container">
-          <div class="loading-placeholder">
-            <i class="fas fa-spinner fa-pulse"></i>
-            <p>Loading 3D Heart Model...</p>
+
+      <section class="stats-module" aria-label="Heart stats">
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fa-solid fa-heart-circle-bolt"></i></div>
+          <div class="stat-info">
+            <div class="label">Avg BPM</div>
+            <div class="value">72</div>
           </div>
         </div>
-        <div style="margin-top: 20px; display: flex; gap: 12px; justify-content: center;">
-          <button class="btn" onclick="markComplete()" aria-label="Mark module as complete and earn XP"><i class="fas fa-check-circle"></i> Mark as Completed (+20 XP)</button>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+          <div class="stat-info">
+            <div class="label">Module XP</div>
+            <div class="value">+20</div>
+          </div>
         </div>
-        <p style="margin-top: 16px; color: var(--text-secondary); font-size: 0.9rem; text-align: center;
-        "><i class="fas fa-mouse"></i> Drag to rotate · Scroll to zoom</p>
-      </div>
-      
-      <!-- Quiz Tab -->
-      <div id="quiz" class="tab-content">
-        <div class="quiz-container">
-          <div id="quiz-progress" style="margin-bottom: 20px;">
-            <span id="question-counter">Question 1 of 10</span>
-            <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; margin-top: 8px;">
-              <div id="progress-bar-fill" style="width: 10%; height: 100%; background: var(--primary-cyan); border-radius: 3px;"></div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-info">
+            <div class="label">Status</div>
+            <div class="value" id="heartStatusDisplay">Ready</div>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <!-- Animated Heart Card -->
+      <div class="card">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <i class="fa-solid fa-heart" style="color: var(--coral); font-size: 1.6rem;"></i>
+          <h3 style="font-weight: 700;">Animated Heart ❤️</h3>
+        </div>
+        <div class="cartoon-heart-container">
+          <div class="cartoon-heart">
+            <div class="heart-shape" style="position:relative; width:100px; height:90px; margin:0 auto;">
+              <style>
+                .heart-shape:before, .heart-shape:after {
+                  position: absolute; content: ""; left: 50px; top: 0; width: 50px; height: 80px;
+                  background: #ff5e7a; border-radius: 50px 50px 0 0; transform: rotate(-45deg);
+                  transform-origin: 0 100%; box-shadow: 0 0 20px #ff3b5c;
+                }
+                .heart-shape:after { left: 0; transform: rotate(45deg); transform-origin: 100% 100%; }
+              </style>
             </div>
+            <div class="blood-vessel" style="width:12px; height:40px; top:-30px; left:44px; border-radius:10px;"></div>
+            <div class="blood-vessel" style="width:15px; height:35px; top:10px; right:-20px; border-radius:10px;"></div>
+            <div class="blood-vessel" style="width:10px; height:30px; bottom:-20px; left:45px; border-radius:10px;"></div>
+            <div class="blood-cell" style="top:20px; left:10px;"></div>
+            <div class="blood-cell" style="top:50px; left:20px;"></div>
+            <div class="blood-cell" style="top:30px; right:15px;"></div>
+            <div class="blood-cell" style="bottom:20px; left:30px;"></div>
           </div>
-          
-          <div id="quiz-question" style="font-size: 1.3rem; font-weight: 500; margin-bottom: 24px;"></div>
-          
-          <div id="quiz-options" style="display: flex; flex-direction: column; gap: 12px;" role="group" aria-label="Quiz options"></div>
-          
-          <div id="quiz-feedback" style="margin-top: 20px; min-height: 40px;"></div>
-          
-          <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-            <button id="prev-btn" class="btn" disabled aria-label="Go to previous question"><i class="fas fa-arrow-left"></i> Previous</button>
-            <button id="next-btn" class="btn" aria-label="Go to next question">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <p style="text-align: center; color: var(--muted-strong);"><i class="fa-solid fa-rotate fa-spin"></i> Watch it beat! Realistic pumping animation</p>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-container">
+        <button class="tab-btn active" data-tab="overview"><i class="fa-solid fa-info-circle"></i>Overview</button>
+        <button class="tab-btn" data-tab="anatomy"><i class="fa-solid fa-cube"></i>Anatomy</button>
+        <button class="tab-btn" data-tab="function"><i class="fa-solid fa-chart-line"></i>Function</button>
+        <button class="tab-btn" data-tab="diseases"><i class="fa-solid fa-hospital"></i>Disorders</button>
+        <button class="tab-btn" data-tab="facts"><i class="fa-solid fa-lightbulb"></i>Fun Facts</button>
+      </div>
+
+      <!-- OVERVIEW TAB -->
+      <div id="overview" class="tab-content active">
+        <div class="card">
+          <h3 style="display: flex; gap: 10px; margin-bottom: 16px;"><i class="fa-solid fa-heart-circle-bolt" style="color:var(--coral);"></i> What is the Heart? (Wikipedia)</h3>
+          <p>The <strong>heart</strong> is a muscular organ that pumps blood through the circulatory system. In humans, it's about the size of a closed fist, located in the middle mediastinum.</p>
+          <div class="info-box">
+            <i class="fa-solid fa-clock"></i> <strong>Did you know?</strong> The human heart beats ~2.5 billion times in a lifetime!
           </div>
-          
-          <div id="quiz-result" style="display: none; text-align: center; margin-top: 30px;">
-            <h2>Quiz Complete!</h2>
-            <p style="font-size: 1.2rem;">Your Score: <span id="final-score" style="color: var(--primary-cyan); font-weight: 700;"></span></p>
-            <button class="btn" onclick="restartQuiz()" aria-label="Restart the quiz"><i class="fas fa-redo"></i> Restart Quiz</button>
+          <h4 style="margin: 20px 0 10px; color: var(--coral);"><i class="fa-solid fa-ruler"></i> Quick Statistics</h4>
+          <table class="comparison-table">
+            <tr><td>Weight</td><td>250–350 g</td></tr>
+            <tr><td>Dimensions</td><td>12×8×6 cm</td></tr>
+            <tr><td>Daily beats</td><td>~100,000</td></tr>
+            <tr><td>Daily blood pumped</td><td>~7,570 liters</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- ANATOMY TAB -->
+      <div id="anatomy" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-cubes" style="color:var(--coral); margin-right:10px;"></i>Heart Anatomy</h3>
+          <h4 style="color:var(--coral); margin:15px 0;">Four Chambers</h4>
+          <ul style="padding-left:20px;">
+            <li><strong>Right Atrium</strong> – receives deoxygenated blood</li>
+            <li><strong>Right Ventricle</strong> – pumps to lungs</li>
+            <li><strong>Left Atrium</strong> – receives oxygenated blood</li>
+            <li><strong>Left Ventricle</strong> – pumps to body (thickest wall)</li>
+          </ul>
+          <h4 style="color:var(--coral); margin:20px 0;">Valves</h4>
+          <ul><li>Tricuspid, Pulmonary, Mitral, Aortic</li></ul>
+          <h4 style="color:var(--coral);">Layers</h4>
+          <ul><li>Endocardium, Myocardium, Epicardium, Pericardium</li></ul>
+        </div>
+        <div class="card">
+          <h3><i class="fa-solid fa-route"></i> Blood Flow Path</h3>
+          <div style="background:rgba(255,107,129,0.1); padding:18px; border-radius:var(--radius); text-align:center;">
+            Body → Right Atrium → Right Ventricle → Lungs → Left Atrium → Left Ventricle → Body
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- FUNCTION TAB -->
+      <div id="function" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-chart-line" style="color:var(--coral);"></i> Cardiac Cycle & Conduction</h3>
+          <p><strong>Systole</strong> (contraction) / <strong>Diastole</strong> (relaxation)</p>
+          <h4 style="color:var(--coral); margin-top:15px;">Electrical System</h4>
+          <ul><li>SA node (pacemaker) → AV node → Bundle of His → Purkinje fibers</li></ul>
+          <div class="info-box"><i class="fa-solid fa-bolt"></i> ECG: P wave, QRS complex, T wave</div>
+          <p><strong>Cardiac Output = HR × SV</strong> (~5 L/min resting)</p>
+        </div>
+      </div>
+
+      <!-- DISORDERS TAB -->
+      <div id="diseases" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-hospital" style="color:var(--coral);"></i> Common Disorders</h3>
+          <ul class="disease-list">
+            <li><strong>Coronary Artery Disease</strong> – plaque buildup</li>
+            <li><strong>Arrhythmia</strong> – irregular heartbeat</li>
+            <li><strong>Heart Failure</strong> – reduced pumping</li>
+            <li><strong>Valvular disease</strong> – stenosis/regurgitation</li>
+            <li><strong>Myocardial Infarction</strong> – heart attack</li>
+          </ul>
+          <div class="info-box"><i class="fa-solid fa-shield-heart"></i> Prevention: exercise, healthy diet, no smoking.</div>
+        </div>
+      </div>
+
+      <!-- FUN FACTS TAB -->
+      <div id="facts" class="tab-content">
+        <div class="card">
+          <h3><i class="fa-solid fa-lightbulb" style="color:var(--amber);"></i> Amazing Heart Facts</h3>
+          <div class="fun-fact-grid">
+            <div class="fact-card"><div class="fact-emoji">🫀</div><p>Starts beating at 4 weeks gestation</p></div>
+            <div class="fact-card"><div class="fact-emoji">🐳</div><p>Blue whale heart ~400 kg</p></div>
+            <div class="fact-card"><div class="fact-emoji">😂</div><p>Laughing boosts blood flow 20%</p></div>
+            <div class="fact-card"><div class="fact-emoji">⚡</div><p>Heart energy could drive a truck 32 km/day</p></div>
+            <div class="fact-card"><div class="fact-emoji">🩸</div><p>100,000 km of blood vessels</p></div>
+          </div>
+          <p style="margin-top:20px; font-size:0.9rem;"><i class="fa-brands fa-wikipedia-w"></i> Source: Wikipedia (CC BY-SA)</p>
+        </div>
+      </div>
+
+      <!-- 3D MODEL CARD -->
+      <div class="card">
+        <h3><i class="fa-solid fa-cube" style="color:var(--blue); margin-right:10px;"></i>3D Interactive Heart Model</h3>
+        <p style="margin-bottom:12px;">Explore the heart in 3D — rotate, zoom, examine structures.</p>
+        <div style="border-radius:var(--radius); overflow:hidden; background:#000;">
+          <iframe width="100%" height="400" src="https://sketchfab.com/models/5b03884c9c3c4e9b9c5c5d6c9a8c9b7e/embed?autostart=1&ui_controls=1&ui_infos=0&ui_watermark=0" frameborder="0" allow="autoplay; fullscreen; xr-spatial-tracking"></iframe>
+        </div>
+        <p style="font-size:0.8rem; margin-top:8px;"><i class="fa-solid fa-info-circle"></i> Drag to rotate · Scroll to zoom (replace with your Sketchfab ID)</p>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-bar">
+        <button class="control-button primary" id="completeHeartBtn"><i class="fa-solid fa-check"></i> Mark as Completed (+20 XP)</button>
+        <a href="index.html" class="pill-link"><i class="fa-solid fa-arrow-left"></i> Back to Human Body Lab</a>
+      </div>
+    </main>
   </div>
 
-  <!-- Neural Background Animation -->
   <script>
-    (function() {
-      const canvas = document.getElementById('neural-bg');
-      const ctx = canvas.getContext('2d');
-      let width, height;
-      let particles = [];
-      
-      function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
+    (() => {
+      "use strict";
+      // ---------- SCORE & COMPLETION LOGIC (sync with index) ----------
+      const STORAGE_KEYS = { score: "labScore", completed: "labCompletedSystems" };
+      const HEART_ID = "heart";
+      const HEART_XP = 20;
+
+      // Helper functions
+      function getScore() {
+        let val = parseInt(localStorage.getItem(STORAGE_KEYS.score), 10);
+        return isNaN(val) ? 0 : val;
       }
-      
-      function initParticles(count = 35) {
-        particles = [];
-        for (let i = 0; i < count; i++) {
-          particles.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.15,
-            vy: (Math.random() - 0.5) * 0.15,
-            size: Math.random() * 2 + 1
-          });
+      function setScore(score) { localStorage.setItem(STORAGE_KEYS.score, score); }
+      function getCompleted() {
+        try {
+          const raw = JSON.parse(localStorage.getItem(STORAGE_KEYS.completed) || "[]");
+          return new Set(Array.isArray(raw) ? raw : []);
+        } catch { return new Set(); }
+      }
+      function setCompleted(set) {
+        localStorage.setItem(STORAGE_KEYS.completed, JSON.stringify([...set]));
+      }
+
+      // UI elements
+      const statusDisplay = document.getElementById('heartStatusDisplay');
+      const completeBtn = document.getElementById('completeHeartBtn');
+
+      function updateUI() {
+        const completed = getCompleted();
+        const isCompleted = completed.has(HEART_ID);
+        statusDisplay.textContent = isCompleted ? 'Completed' : 'Ready';
+        if (isCompleted) {
+          completeBtn.disabled = true;
+          completeBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Already Completed';
+          completeBtn.style.opacity = '0.7';
+        } else {
+          completeBtn.disabled = false;
+          completeBtn.innerHTML = '<i class="fa-solid fa-check"></i> Mark as Completed (+20 XP)';
+          completeBtn.style.opacity = '1';
         }
       }
-      
-      function drawParticles() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = '#00f0ff';
-        ctx.shadowColor = '#00f0ff';
-        ctx.shadowBlur = 6;
-        
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          
-          if (p.x < 0 || p.x > width) p.vx *= -1;
-          if (p.y < 0 || p.y > height) p.vy *= -1;
-          
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
+
+      // Complete action
+      function completeHeartModule() {
+        const completed = getCompleted();
+        if (completed.has(HEART_ID)) return;
+
+        completed.add(HEART_ID);
+        setCompleted(completed);
+
+        const currentScore = getScore();
+        setScore(currentScore + HEART_XP);
+
+        updateUI();
+        // Optional: show feedback
+        alert('✅ Heart module completed! +20 XP added to your Lab Score.');
+      }
+
+      completeBtn.addEventListener('click', completeHeartModule);
+
+      // Sync with storage changes from other tabs
+      window.addEventListener('storage', (e) => {
+        if ([STORAGE_KEYS.score, STORAGE_KEYS.completed].includes(e.key)) updateUI();
+      });
+
+      // Tabs functionality
+      const tabs = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
+      tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+          tabs.forEach(b => b.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(tabId).classList.add('active');
         });
-        
-        ctx.shadowBlur = 2;
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.05)';
-        ctx.lineWidth = 0.5;
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < 100) {
-              ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
-              ctx.stroke();
-            }
+      });
+
+      // Particles (same as index)
+      const canvas = document.getElementById('particles');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const count = reduced ? 40 : 100;
+        let width, height, dpr;
+        const particles = [];
+
+        function resize() {
+          dpr = Math.min(devicePixelRatio || 1, 2);
+          width = window.innerWidth; height = window.innerHeight;
+          canvas.width = width * dpr; canvas.height = height * dpr;
+          canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        function initParticles() {
+          particles.length = 0;
+          for (let i=0; i<count; i++) {
+            particles.push({
+              x: Math.random()*width, y: Math.random()*height,
+              vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+              r: Math.random()*2+0.8
+            });
           }
         }
-        requestAnimationFrame(drawParticles);
+        function draw() {
+          ctx.clearRect(0,0,width,height);
+          for (let i=0; i<particles.length; i++) {
+            for (let j=i+1; j<particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const dist = Math.hypot(dx, dy);
+              if (dist < 130) {
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(255,107,129, ${0.12*(1-dist/130)})`;
+                ctx.lineWidth = 0.7;
+                ctx.stroke();
+              }
+            }
+          }
+          particles.forEach(p => {
+            const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+            grad.addColorStop(0, '#fff9fa');
+            grad.addColorStop(0.5, '#ff8f9c');
+            grad.addColorStop(1, 'rgba(255,107,129,0)');
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fillStyle = grad; ctx.fill();
+            if (!reduced) { p.x += p.vx; p.y += p.vy; if (p.x<0) p.x=width; if (p.x>width) p.x=0; if (p.y<0) p.y=height; if (p.y>height) p.y=0; }
+          });
+          if (!reduced) requestAnimationFrame(draw);
+        }
+        resize(); initParticles(); draw();
+        window.addEventListener('resize', () => { resize(); initParticles(); });
       }
-      
-      window.addEventListener('resize', () => {
-        resizeCanvas();
-        initParticles();
-      });
-      
-      resizeCanvas();
-      initParticles();
-      drawParticles();
+
+      updateUI();
     })();
-  </script>
-
-  <!-- Tab Switching Logic -->
-  <script>
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
-        
-        // Smooth scroll to tab content
-        setTimeout(() => {
-          document.querySelector('.glass-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 50);
-      });
-    });
-    
-    function markComplete() {
-      let xp = parseInt(localStorage.getItem('labScore') || '0');
-      xp += 20;
-      localStorage.setItem('labScore', xp);
-      alert('Module completed! +20 XP. Total XP: ' + xp);
-      window.location.href = 'index.html';
-    }
-  </script>
-
-  <!-- Quiz JavaScript -->
-  <script>
-    // Heart Quiz Data
-    const quizQuestions = [
-      { question: "How many chambers does the human heart have?", options: ["2", "3", "4", "5"], correct: 2 },
-      { question: "Which chamber pumps oxygenated blood to the body?", options: ["Right Atrium", "Right Ventricle", "Left Atrium", "Left Ventricle"], correct: 3 },
-      { question: "What is the average resting heart rate for adults?", options: ["40-50 bpm", "60-100 bpm", "100-120 bpm", "120-140 bpm"], correct: 1 },
-      { question: "Which blood vessels carry blood away from the heart?", options: ["Veins", "Arteries", "Capillaries", "Venules"], correct: 1 },
-      { question: "What is the name of the heart's natural pacemaker?", options: ["AV node", "Bundle of His", "Purkinje fibers", "SA node"], correct: 3 },
-      { question: "Which valve lies between the left atrium and left ventricle?", options: ["Tricuspid", "Pulmonary", "Mitral (Bicuspid)", "Aortic"], correct: 2 },
-      { question: "What is the thickest layer of the heart wall responsible for contraction?", options: ["Endocardium", "Myocardium", "Epicardium", "Pericardium"], correct: 1 },
-      { question: "Which blood vessel returns deoxygenated blood from the body to the heart?", options: ["Aorta", "Pulmonary artery", "Superior vena cava", "Pulmonary vein"], correct: 2 },
-      { question: "What is the cardiac output of a healthy adult at rest?", options: ["1-2 L/min", "3-4 L/min", "5-6 L/min", "7-8 L/min"], correct: 2 },
-      { question: "Which of these is NOT a function of the cardiovascular system?", options: ["Transport oxygen", "Remove waste", "Produce hormones", "Regulate temperature"], correct: 2 }
-    ];
-
-    let currentQuestionIndex = 0;
-    let userAnswers = new Array(quizQuestions.length).fill(null);
-    let quizSubmitted = false;
-
-    const questionEl = document.getElementById('quiz-question');
-    const optionsEl = document.getElementById('quiz-options');
-    const feedbackEl = document.getElementById('quiz-feedback');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const counterEl = document.getElementById('question-counter');
-    const progressFill = document.getElementById('progress-bar-fill');
-    const resultDiv = document.getElementById('quiz-result');
-
-    // Load quiz state from localStorage
-    function loadQuizState() {
-      const saved = localStorage.getItem('quizState_heart');
-      if (saved) {
-        const state = JSON.parse(saved);
-        currentQuestionIndex = state.currentIndex;
-        userAnswers = state.answers;
-        quizSubmitted = state.submitted;
-      }
-    }
-
-    // Save quiz state to localStorage
-    function saveQuizState() {
-      localStorage.setItem('quizState_heart', JSON.stringify({
-        currentIndex,
-        answers: userAnswers,
-        submitted: quizSubmitted
-      }));
-    }
-
-    function loadQuestion(index) {
-      const q = quizQuestions[index];
-      questionEl.textContent = q.question;
-      
-      let optionsHtml = '';
-      q.options.forEach((opt, i) => {
-        const isSelected = userAnswers[index] === i;
-        const isCorrect = quizSubmitted && i === q.correct;
-        const isWrong = quizSubmitted && isSelected && i !== q.correct;
-        
-        let optionClass = 'quiz-option';
-        if (isSelected && !quizSubmitted) optionClass += ' selected';
-        if (quizSubmitted) {
-          if (isCorrect) optionClass += ' correct';
-          if (isWrong) optionClass += ' wrong';
-        }
-        
-        optionsHtml += `
-          <div class="${optionClass}" data-option-index="${i}" role="button" tabindex="0" aria-label="${opt}">
-            <span class="option-letter">${String.fromCharCode(65 + i)}</span>
-            <span>${opt}</span>
-            ${isCorrect ? '<i class="fas fa-check-circle" style="color: #00ff88; margin-left: auto;"></i>' : ''}
-            ${isWrong ? '<i class="fas fa-times-circle" style="color: #ff4d4d; margin-left: auto;"></i>' : ''}
-          </div>
-        `;
-      });
-      optionsEl.innerHTML = optionsHtml;
-      
-      if (!quizSubmitted) {
-        document.querySelectorAll('.quiz-option').forEach(opt => {
-          opt.addEventListener('click', () => {
-            const selectedIndex = parseInt(opt.dataset.optionIndex);
-            userAnswers[currentQuestionIndex] = selectedIndex;
-            saveQuizState();
-            loadQuestion(currentQuestionIndex);
-            updateButtons();
-          });
-          opt.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              opt.click();
-            }
-          });
-        });
-      }
-      
-      counterEl.textContent = `Question ${index + 1} of ${quizQuestions.length}`;
-      progressFill.style.width = `${((index + 1) / quizQuestions.length) * 100}%`;
-      
-      prevBtn.disabled = index === 0;
-      if (index === quizQuestions.length - 1) {
-        nextBtn.innerHTML = 'Submit <i class="fas fa-check"></i>';
-      } else {
-        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
-      }
-      
-      if (quizSubmitted) {
-        const userAns = userAnswers[index];
-        if (userAns === q.correct) {
-          feedbackEl.innerHTML = '<p style="color: #00ff88;"><i class="fas fa-check-circle"></i> Correct! Well done.</p>';
-        } else {
-          feedbackEl.innerHTML = `<p style="color: #ff4d4d;"><i class="fas fa-times-circle"></i> Incorrect. The correct answer is: ${q.options[q.correct]}</p>`;
-        }
-      } else {
-        feedbackEl.innerHTML = '';
-      }
-    }
-
-    function updateButtons() {
-      if (!quizSubmitted) {
-        nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
-      }
-    }
-
-    function calculateScore() {
-      return userAnswers.reduce((score, ans, idx) => ans === quizQuestions[idx].correct ? score + 1 : score, 0);
-    }
-
-    function showResult() {
-      document.getElementById('quiz-progress').style.display = 'none';
-      questionEl.style.display = 'none';
-      optionsEl.style.display = 'none';
-      feedbackEl.style.display = 'none';
-      prevBtn.style.display = 'none';
-      nextBtn.style.display = 'none';
-      resultDiv.style.display = 'block';
-      document.getElementById('final-score').textContent = `${calculateScore()} / ${quizQuestions.length}`;
-      
-      // Award XP based on score
-      const score = calculateScore();
-      if (score >= 7) {
-        let xp = parseInt(localStorage.getItem('labScore') || '0');
-        xp += 30;
-        localStorage.setItem('labScore', xp);
-      }
-
-      // Clear quiz state when complete
-      localStorage.removeItem('quizState_heart');
-    }
-
-    window.restartQuiz = function() {
-      currentQuestionIndex = 0;
-      userAnswers = new Array(quizQuestions.length).fill(null);
-      quizSubmitted = false;
-      localStorage.removeItem('quizState_heart');
-      document.getElementById('quiz-progress').style.display = 'block';
-      questionEl.style.display = 'block';
-      optionsEl.style.display = 'flex';
-      feedbackEl.style.display = 'block';
-      prevBtn.style.display = 'block';
-      nextBtn.style.display = 'block';
-      resultDiv.style.display = 'none';
-      loadQuestion(0);
-      updateButtons();
-    };
-
-    prevBtn.addEventListener('click', () => {
-      if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        saveQuizState();
-        loadQuestion(currentQuestionIndex);
-        updateButtons();
-      }
-    });
-
-    nextBtn.addEventListener('click', () => {
-      if (!quizSubmitted) {
-        if (currentQuestionIndex < quizQuestions.length - 1) {
-          currentQuestionIndex++;
-          saveQuizState();
-          loadQuestion(currentQuestionIndex);
-          updateButtons();
-        } else {
-          if (userAnswers.every(ans => ans !== null)) {
-            quizSubmitted = true;
-            loadQuestion(currentQuestionIndex);
-            updateButtons();
-            setTimeout(() => {
-              showResult();
-            }, 1500);
-          } else {
-            alert('Please answer all questions before submitting.');
-          }
-        }
-      }
-    });
-
-    // Initialize quiz with saved state
-    loadQuizState();
-    loadQuestion(currentQuestionIndex);
-    updateButtons();
-  </script>
-
-  <!-- Three.js 3D Viewer (Module) -->
-  <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-    const container = document.getElementById('model-container');
-    const MODEL_LOAD_TIMEOUT = 10000; // 10 seconds
-    let modelLoadTimeout;
-
-    container.innerHTML = '';
-
-    // 1. Scene, Camera, Renderer
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0f1a);
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(3, 2, 5);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    container.appendChild(renderer.domElement);
-
-    // 2. Lighting
-    const ambientLight = new THREE.AmbientLight(0x404060);
-    scene.add(ambientLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
-    dirLight1.position.set(2, 5, 3);
-    scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xffaa88, 0.8);
-    dirLight2.position.set(-3, 2, 1);
-    scene.add(dirLight2);
-    const pointLight = new THREE.PointLight(0x00f0ff, 0.6);
-    pointLight.position.set(1, 2, 2);
-    scene.add(pointLight);
-    const fillLight = new THREE.PointLight(0x4466cc, 0.4);
-    fillLight.position.set(-1, -1, 2);
-    scene.add(fillLight);
-
-    // 3. Controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 1.5;
-    controls.enableZoom = true;
-    controls.enablePan = false;
-    controls.target.set(0, 0.5, 0);
-
-    // 4. Load Model
-    const loader = new GLTFLoader();
-    const fileId = '12q1wMQDVxfNEXOJ7Bvvb0yf3ILkbTz3H';
-    const modelPath = `https://drive.google.com/uc?export=download&id=${fileId}`;
-    
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'loading-placeholder';
-    loadingDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i><p>Loading 3D Model...</p>';
-    loadingDiv.style.position = 'absolute';
-    loadingDiv.style.top = '0';
-    loadingDiv.style.left = '0';
-    loadingDiv.style.width = '100%';
-    loadingDiv.style.height = '100%';
-    loadingDiv.style.display = 'flex';
-    loadingDiv.style.background = '#0a0f1a';
-    loadingDiv.style.zIndex = '10';
-    container.style.position = 'relative';
-    container.appendChild(loadingDiv);
-
-    // Set timeout for model loading
-    modelLoadTimeout = setTimeout(() => {
-      if (loadingDiv && loadingDiv.parentElement) {
-        loadingDiv.innerHTML = `
-          <i class="fas fa-exclamation-triangle" style="color: #ff4d4d;"></i>
-          <p style="color: #ff4d4d;">3D model loading timed out.</p>
-          <p style="font-size: 0.9rem; margin-top: 8px;">Please try refreshing the page or check your connection.</p>
-        `;
-      }
-    }, MODEL_LOAD_TIMEOUT);
-
-    loader.load(
-      modelPath,
-      (gltf) => {
-        clearTimeout(modelLoadTimeout);
-        if (loadingDiv && loadingDiv.parentElement) loadingDiv.remove();
-        const model = gltf.scene;
-        scene.add(model);
-        
-        const box = new THREE.Box3().setFromObject(model);
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 2.5 / maxDim;
-        model.scale.set(scale, scale, scale);
-        
-        const center = box.getCenter(new THREE.Vector3());
-        model.position.sub(center);
-        model.position.y += 0.2;
-        
-        model.traverse((node) => {
-          if (node.isMesh) {
-            node.material.emissive = new THREE.Color(0x112233);
-            node.material.emissiveIntensity = 0.1;
-          }
-        });
-      },
-      (xhr) => {
-        const percent = Math.floor((xhr.loaded / xhr.total) * 100);
-        if (loadingDiv && loadingDiv.parentElement) {
-          loadingDiv.innerHTML = `<i class="fas fa-spinner fa-pulse"></i><p>Loading: ${percent}%</p>`;
-        }
-      },
-      (error) => {
-        clearTimeout(modelLoadTimeout);
-        console.error('Model load failed:', error);
-        if (loadingDiv && loadingDiv.parentElement) {
-          loadingDiv.innerHTML = `
-            <i class="fas fa-exclamation-triangle" style="color: #ff4d4d;"></i>
-            <p style="color: #ff4d4d;">3D model load failed.</p>
-            <p style="font-size: 0.9rem; margin-top: 8px;">Try refreshing the page or check the browser console for details.</p>
-          `;
-        }
-      }
-    );
-
-    // 5. Animation Loop
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // 6. Handle Resize
-    window.addEventListener('resize', () => {
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    });
   </script>
 </body>
 </html>
